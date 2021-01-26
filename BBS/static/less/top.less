@@ -1,0 +1,83 @@
+@import "./commit.less";
+.top{
+  width:33%;
+  height: 100%;
+  float: left;
+  .top_container{
+    width: 90%;
+    background-color: white;
+    height: 100%;
+    border-radius: 4px;
+  .top_title{
+    width: 100%;
+    height:50px;
+    position: relative;
+    span{
+        position: absolute;
+       bottom:0;
+       font-weight: bold;
+      &:nth-of-type(1){
+        margin-left: 20px;
+        display: inline-block;
+        font-size:20px;
+        left: 0;
+      }
+      &:nth-of-type(2){
+        font-style:italic;
+        color:#C0C4CC;
+        font-size:20px;
+        right:4%;
+      }
+    }
+  }
+  .top_cenent{
+    width: 95%;
+    height: 85%;
+    margin:20px 0px 0px 20px;
+    li{
+      width: 100%;
+      height:85px;
+      margin-top: 5px;
+      .top_information{
+      div{
+        float: left;
+         height:80px;
+        &:first-child{
+          line-height:60px;
+          text-align:left;
+          width:8%;
+          span{
+            .text_size(25px);
+          }
+        }
+        &:nth-child(2){
+          width:30%;
+          img{
+            width:90%;
+            height:100%;
+            vertical-align: middle;
+          }
+        }
+        &:nth-child(3){
+          width:50%;
+          padding-left: 10px;
+          position:relative;
+          span{
+              display:block;
+              &:first-child{
+                  .text_size(18px);
+                  word-wrap: break-word;
+                  word-break: break-all;
+                  margin-top:10px;
+              }
+              &:last-child{
+                bottom:10px;
+              }
+          }
+        }
+      }
+      }
+    }
+  }
+  }
+}

@@ -1,0 +1,110 @@
+.active{
+  color: #2299DD;
+  font-weight: bold;
+}
+.boder-xin(@size,@color1,@color2,@color3,@color4){
+   width: 0;
+   height: 0;
+   border-top:@size solid @color1;
+   border-bottom:@size solid @color2;
+   border-left: @size solid @color3;
+   border-right:@size solid @color4;
+ }
+ .textsellipsis(){
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+ .colorli(){
+   background:#2299DD;
+   line-height:20px;
+   color: white;
+   border-radius:5px;
+ }
+ .com_title(@color,@size){
+   font-size:28px;
+   font-weight: bold;
+   margin-top:20px;
+    i{
+      color:@color;
+      font-size:@size;
+    }
+ }
+.text(@size,@color,@width){
+  margin-top:-2px;
+  width:@width;
+  display: inline-block;
+  color:@color;
+  font-size: @size;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 10px;
+}
+.blockbox(@width,@height){
+  width: @width;
+  height: @height;
+  display: inline-block;
+}
+.same_border(@height){
+ width:1480px;
+ background-color: white;
+ height:@height;
+ border-radius: 10px;
+ margin-top:20px;
+ overflow:hidden;
+}
+.headertitle(@centent){
+    width: 100%;
+    height: 60px;
+    border:1px solid #EBEEF5;
+    line-height:58px;
+    background-color: #f5f7fa;
+    span{
+      &:nth-of-type(1){
+        font-size:28px;
+        font-family:"";
+        color:black;
+        padding-left:20px;
+      &::before{
+        content:@centent;
+        font-family:"icomoon";
+        color:gray;
+        padding-right:10px;
+        line-height:50px;
+      }
+      }
+    }
+}
+.identicalblock(@height){
+  height:@height;
+  width: 100%;
+  margin-top:-25px;
+}
+.text_size(@size){
+  font-size:@size;
+  font-weight:bold;
+}
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
