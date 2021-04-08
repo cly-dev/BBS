@@ -1,0 +1,68 @@
+@import "../commit.less";
+.Departemnt_header{
+    .DepartmentHeader("\e9bc",#409EFF);
+}
+
+.Department_container{
+    border: 1px solid #EBEEF5;
+    background-color: white;
+    .clearfloat();
+    .Department_img{
+        margin: 10px;
+        float: left;
+        width:29%;
+        height: 500px;
+        position: relative;
+        img{
+            width: 400px;
+            height: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
+    }
+    .Department_info{
+        .clearfloat();
+        position: relative;
+        float: left;
+        width:69%;
+        height: 450px;
+        .Department_operation{
+            position: absolute;
+            bottom: 0;
+            transform: translate(-50%,0);
+            left: 50%;
+        }
+        .Dapartment_tis{
+        width:70px;
+        float: left;
+        span{
+            font-size: 15px;
+            color: #606266;
+            height:40px;
+            line-height: 40px;
+            width: 100%;
+            display: inline-block;
+           }
+    }
+    .Department_data{
+        float: left;
+        width:70%;
+        .Department_introduction{
+            letter-spacing:2px;
+            padding-top: 10px;
+            line-height: 20px;
+            max-height: 300px;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+        span{
+            line-height: 40px;
+            height:40px;
+            width: 100%;
+            display: inline-block;
+        }
+    }
+    }
+}

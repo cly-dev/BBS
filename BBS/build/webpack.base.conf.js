@@ -51,7 +51,8 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        exclude:/node_modules/,
+        include: [resolve("../build"),resolve('src'), resolve('test'),resolve('/node_modules/element-ui/src'),resolve('/node_modules/element-ui/packages'),resolve('../dist')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

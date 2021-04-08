@@ -8,7 +8,9 @@ const baseWebpackConfig = require('./webpack.base.conf')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-const portfinder = require('portfinder')
+const portfinder = require('portfinder');
+const WorkWebpackPlugin=require("workbox-webpack-plugin");
+const uglifyjswebpackplugin=require("uglifyjs-webpack-plugin");
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -38,7 +40,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       ? { warnings: false, errors: true }
       : false,
     publicPath: config.dev.assetsPublicPath,
-    proxy: config.dev.proxyTable,
+    proxy:{
+      '/api': {
+        ws: true,//跨域
+        target: 'http://localhost:9090/', // 接口的域名
+        // secure: false,  // 如果是https接口，需要配置这个参数
+          changeOrigin: true, // 如果接口跨域，需要进行这个参数配置，为true的话，请求的header将会设置为匹配目标服务器的规则（Access-Control-Allow-Origin）
+        pathRewrite: { '^/api': '' //本身的接口地址没有 '/api' 这种通用前缀，所以要rewrite，如果本身有则去掉 
+        } }
+    },
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
@@ -52,11 +62,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
+    new HtmlWebpackPlugin(
+      {
       filename: 'index.html',
       template: 'index.html',
-      inject: true
-    }),
+      inject: true,
+      // chunks: ['manifest', 'vendor', 'app']
+    }
+    
+    ),
     // copy custom static assets
     new CopyWebpackPlugin([
       {
@@ -64,7 +78,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+     // new WorkWebpackPlugin.GenerateSW()
   ]
 })
 

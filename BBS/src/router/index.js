@@ -1,112 +1,196 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import index from '@/components/index'
-import In from '@/components/In'
-import List from '@/components/List'
-import Knowledge from '@/components/Knowledge'
-import Campus from '@/components/Campus.vue'
-import Hotlist from '@/components/Hotlist.vue'
-import Follow from "@/components/Follow.vue"
-import Menu from '@/components/Campus_Menu.vue'
-import Questions from '@/components/Questions.vue'
-import Login  from '@/components/Login'
-import Article from '@/components/Article.vue'
-import Department_module from '@/components/Department_module.vue'
-import HeaderForum from '@/components/HeaderForum.vue'
-import ArticleDetails from '@/components/Articledetails.vue'
-import Square from "@/components/Square.vue"
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    //登录
     {
-      path: '/',
+      path: '/login',
       name:'login',
-      component:Login
+      component:()=>import("../components/public/Login.vue")
     },
    //首页
     {
       path:'/index',
       name:'index',
-      component:index
+      component:()=>import("../components/public/Index.vue"),
+      meta:{
+        auth:false
+      }
     },
     {
-      path:'/in',
-      name:'In',
-      component:In
-    },
-    {
-      path:'/list',
-      name:'list',
-      component:List
-    },
-    {
-      path:'/know',
-      name:'know',
-      component:Knowledge
+      path:"/register",
+      name:'register',
+      component:()=>import('../components/public/Register.vue')
     },
     //论坛
     {
       path:'/campus',
       name:'campus',
-      component:Campus,
+      component:()=>import("../components/Bbs/Campus.vue"),
+      redirect:{
+        name:'hoslist'
+      },
       children:[
         {
           path:'/campus/menu',
           name:"menu",
-          component:Menu,
+          component:()=>import("../components/Bbs/Campus_Menu.vue"),
           children:[
            {
-             path:'/campus/hoslist',
-             name:'hoslist',
-             component:Hotlist
+             path:'/campus/hotlist',
+             name:'hotlist',
+             component:()=>import("../components/Bbs/Hotlist.vue")
            },
            {
              path:'/campus/follow',
              name:'follow',
-             component:Follow
+             component:()=>import("../components/Bbs/Follow.vue")
            },
            {
              path:'/campus/square',
              name:'square',
-             component:Square
+             component:()=>import("../components/Bbs/Square.vue")
            }
           ]
         },
         {
           path:'/campus/hotlist/articledetails',
           name:'articledetails',
-          component:ArticleDetails
+          component:()=>import("../components/Bbs/Articledetails.vue")
+        },
+        {
+          path:'/campus/quest/questdetail',
+          name:'questdetail',
+          component:()=>import("../components/Bbs/Questiondetail.vue")
         },
          {
            path:"/campus/questions",
            name:'questions',
-           component:Questions
+           component:()=>import("../components/Bbs/Questions.vue")
          },
          {
          path:"/campus/article",
          name:'article',
-         component:Article,
+         component:()=>import("../components/Bbs/Article.vue"),
          meta:{
-              auth:false,
+              edit:false,
          }
+         },{
+           path:"/campus/collection",
+           name:"collection",
+           component:()=>import("../components/Bbs/Collection.vue")
+         },{
+           path:"/campus/collection-article",
+           name:"collection-article",
+           component:()=>import("../components/Bbs/CollectionArticle.vue")
+         },{
+           path:"/campus/collection-question",
+           name:"collection-question",
+           component:()=>import("../components/Bbs/CollectionQuest.vue")
+         },{
+           path:"/campus/track",
+           name:"track",
+           component:()=>import("../components/Bbs/Track.vue")
+         },{
+           path:"/campus/My-questision",
+           name:"Myquestision",
+           component:()=>import("../components/Bbs/MyQuesition.vue")
+         },{
+           path:"/campus/My-propose",
+           name:"Mypropose",
+           component:()=>import("../components/Bbs/MypPopose.vue")
+         },{
+           path:"/campus/Revise-acticle",
+           name:"Revuseacticle",
+           component:()=>import("../components/Bbs/ReviseActicle.vue")
+         },{
+           path:"/campus/Revise-question",
+           name:"Revisequestion",
+           component:()=>import("../components/Bbs/ReviseQuestion.vue")
          }
       ]
     },
     {
       path:'/headerForum',
       name:'headerForum',
-      component:HeaderForum
-    },
-    //部门
-    {
-      path:'/departmentmodule',
-      name:'departmentmodule',
-      component:Department_module
+      component:()=>import("../components/Bbs/HeaderForum.vue")
     },
 
-  ]
+    //部门
+    {
+      path:'/department',
+      name:'部门主页',
+      component:()=>import("../components/Department/Department.vue"),
+      redirect:{
+        name:'部门首页'
+      },
+      children:[
+        {
+          path:"/department/index",
+          name:'部门首页',
+          component:()=>import("../components/Department/Index.vue")
+        },{
+          path:"/department/createactivity",
+          name:'活动/发布活动',
+          component:()=>import("../components/Department/CreateAcvitity.vue")
+        },{
+          path:"/department/createdepartment",
+          name:'添加部门',
+          component:()=>import("../components/Department/CreateDepartment.vue")
+        },{
+          path:"/department/my-activity",
+          name:"活动/我的活动",
+          component:()=>import("../components/Department/MyActivity.vue")
+        },{
+          path:"/department/take-activity",
+          name:"活动/我的活动/我参加的",
+          component:()=>import("../components/Department/TakeActivity.vue")
+        },{
+          path:"/department/release-activity",
+          name:"活动/我的活动/我发布的",
+          component:()=>import("../components/Department/ReleaseActivity.vue")
+        },{
+          path:"/department/watch-activity",
+          name:"活动/全部活动",
+          component:()=>import("../components/Department/WatchActivity.vue")
+        },{
+          path:"/department/detail-activity",
+          name:"活动/活动详情",
+          component:()=>import("../components/Department/ActivityDetail.vue")
+        },{
+          path:"/department/my-department",
+          name:"部门/我的部门",
+          component:()=>import("../components/Department/MyDepartment.vue")
+        },{
+          path:"/department/admin-department",
+          name:"部门/管理部门",
+          component:()=>import("../components/Department/AdminDepartment.vue")
+        },{
+          path:"/department/identification",
+          name:"部门/认证",
+          component:()=>import("../components/Department/Identification.vue")
+        }
+      ]
+    },
+    {
+      path:'*',
+      name:'404',
+      component:()=>import ("../components/404.vue")
+    },
+  
+  ],
+  //路由滚动事件
+  scrollBehavior (to, from, savedPosition) {
+    if(savedPosition){
+      return savedPosition;
+    }else{
+      return{
+        y:0
+      }
+    }
+  }
 })
 
 const VueRouterPush = Router.prototype.push
