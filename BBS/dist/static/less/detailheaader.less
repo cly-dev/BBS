@@ -1,0 +1,63 @@
+@import "./commit.less";
+@left:10%;
+.detailHeaader_header{
+  width: 100%;
+  height:55px;
+  background-color: #FFFFFF;
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  box-shadow:0 0 5px #d1d4da;
+  -webkit-box-shadow:0 0 5px #d1d4da ;
+  .detailHeaader_nav{
+      // border: 1px  solid;
+       height: 100%;
+       width: 1200px;
+       margin: 0 auto;
+  }
+  .article_title{
+    .textsellipsis;
+    width: 60%;
+    // border: 1px solid;
+     height:55px;
+     line-height:55px;
+     float: left;
+     span{
+       font-size: 25px;
+       font-weight: bold;
+
+     }
+  }
+  .article_browse{
+        margin-left:60px;
+        height: 55px;
+        width:13%;
+        float: left;
+        // border: 1px solid;
+        position: relative;
+        .article_support,span:nth-of-type(1),.article_stamp{
+          top: 50%;
+          margin-top:-15px;
+          position:absolute;
+         cursor: pointer;
+         display: inline;
+          width:30px;
+          height:30px;
+          vertical-align:top;
+        }
+        .article_support{
+            left: @left;
+        }
+        .article_stamp{
+            right:50px;
+        }
+        span:nth-of-type(1){
+          font-size:20px;
+          left:@left + 15%;
+          top: 55%;
+          &:hover{
+            color: #4fefef;
+          }
+        }
+  }
+}

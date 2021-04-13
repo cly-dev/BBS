@@ -1,0 +1,63 @@
+
+.nav_icon{
+    width: 50%;
+    height: 500px;
+    margin: 0 auto;
+    position: relative;
+    div{
+        cursor: pointer;
+        background-color: white;
+        border-radius: 20px;
+        height: 220px;
+        text-align: center;
+        width: 220px;
+        border: 1px solid #EBEEF5;
+        position:absolute;
+        top: 50%;
+        margin-top:-100px;
+        &:first-child{
+            left: 150px;
+            &:hover .icon-huodong {
+                animation:ratate 1s ease forwards;
+                font-size: 150px;
+            }
+        }
+        &:last-child{
+            right: 150px;
+            &:hover .icon-canjiagongzuoshijian {
+                animation:ratate 1s ease forwards;
+                font-size: 150px;
+            }
+        }
+        span:last-child{
+            font-size:25px;
+            color: #606266;
+        }
+    }
+}
+.iconfont{
+    display: inline-block;
+    transition:all .2s ease;
+    line-height: 170px;
+    font-size: 140px;
+}
+.icon-huodong{
+    color:#1296db;
+}
+.icon-canjiagongzuoshijian{
+    color:#f4ea2a;
+}
+
+@keyframes ratate{
+    to{
+    };
+    25%{
+    transform: rotate(30deg)
+
+    }
+    75%{
+        transform: rotate(-30deg)
+    }
+    from{
+    }
+}

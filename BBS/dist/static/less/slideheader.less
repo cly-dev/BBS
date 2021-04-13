@@ -1,0 +1,29 @@
+.slideHeader{
+    height:50px;
+    width: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    z-index: 999999;
+    box-shadow:0 0 5px gray;
+  }
+  .slideHeader_header{
+    width: 1200px;
+    margin:0 auto;
+    height:50px;
+    li{
+      float: left;
+      width:5%;
+      height: 100%;
+      font-size: 19px;
+      line-height: 50px;
+      cursor: pointer;
+      &+li{
+        margin-left:30px;
+      }
+  
+     &:hover{
+         color:#5aa4ff;
+      }
+    }
+  }

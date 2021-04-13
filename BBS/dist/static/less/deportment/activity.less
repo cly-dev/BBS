@@ -1,0 +1,61 @@
+@import "../commit.less";
+@color:#EBEEF5;
+.activity_container{
+    border-left: 1px solid @color ;
+    width: 100%;
+    // margin:30px 0 0 40px;
+    font-size: 20px;
+    .container_title{
+        text-indent:10px;
+        display: block;
+        font-size: 25px;
+        height:55px;
+        line-height: 50px;
+        color: #303133;
+        border-top: 1px solid @color;
+        border-left: 1px solid @color;
+        border-right: 1px solid @color;
+        border-style:1px;
+        &::before{
+            font-size:30px;
+            margin-right:8px;
+            content: "\e9d4";
+            font-family:"icomoon";
+            color:rgba(226, 241, 8, 0.856);
+          }
+    }
+}
+.activity_form{
+    position: relative;
+    width:100%;
+    background-color:#fff;
+    padding-top: 20px;
+    height: 750px;
+    .Activity_step{
+        top: 100px;
+        right:180px;
+        height: 500px;
+        position: absolute;
+        width: 200px;
+    }
+}
+.activity_coverimg{
+    .clearfloat();
+    max-width: 80%;
+    min-width: 220px;
+    margin-left: 25px;
+    line-height: 150px;
+    span{
+        text-indent: 3px;
+        display:block;
+        width: 75px;
+        float: left;
+        &:first-of-type{
+            font-size: 14px;
+        }
+    }
+    .upload_container{
+        float: left;
+        height: 160px;
+    }
+}

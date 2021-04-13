@@ -1,0 +1,76 @@
+@import "../commit.less";
+.Track_header{
+    .headertitle("\e999");
+}
+.Track_container{
+    padding-bottom: 10px;
+    padding-left: 20px;
+    .Track_tis{
+        color:#909399;
+        font-size:12px;
+    }
+    .Delete_btn{
+        margin-right:30px;
+        margin-top: 10px;
+        text-align:right;
+    }
+    .Track_main{
+        position: relative;
+        height: 30px;
+        line-height: 30px;
+        span{
+            top: 50%;
+            transform: translate(0,-50%);
+            position: absolute;
+            display: inline-block;
+            &:first-of-type{
+                color: white;
+                text-align: center;
+                line-height: 20px;   
+                width: 20px;
+                height:20px;
+                border-radius: 50%;
+                background:#409EFF;
+            }
+            &:nth-of-type(2){
+                border: 1px dashed #409EFF;
+                width:45%;
+                left:22px;
+            }
+            &:nth-of-type(3){
+                right:10%;
+                color: #909399;
+                width:40%;
+                .textsellipsis();
+            }  
+        }
+       
+        .el-icon-delete{
+            text-align: center;
+            line-height: 20px;
+            right:30px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: #F56C6C;
+        }
+    }
+}
+.Track_null{
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    margin:40px auto;
+    span{
+        font-size: 15px;
+        height: 30px;
+        line-height: 30px;
+        text-indent: 10px;
+        width:80px;
+    }
+    a{
+        font-size: 15px;
+        color: #409EFF;
+    }
+}

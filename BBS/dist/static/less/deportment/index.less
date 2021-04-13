@@ -1,0 +1,65 @@
+@import "../commit.less";
+.divstyle(@height){
+    background-color: white;
+        width: 100%;
+        height:@height;
+        margin-top:15px;
+        border-radius: 5px;
+        overflow: auto;
+}
+
+
+.carousel_map{
+    margin:20px auto;
+    width: 40%;
+    height:400px;
+}
+
+  .main_container{
+      height: auto;
+      width: 100%;
+      margin-top: 15px;
+    .clearfloat();
+  }
+  .active_contain{
+    margin-left:35px;
+      height: 500px;
+      width:60%;
+      float: left;
+      .active_title{
+        &::before{
+            font-size:30px;
+            margin-right:8px;
+            content: "\e9d4";
+            font-family:"icomoon";
+            color:rgba(226, 241, 8, 0.856);
+
+          }
+      }
+      .active_content{
+        .divstyle(400px);
+        cursor: pointer;
+    }
+  }
+  .notice_container{
+    margin-left:40px;
+    float: left;
+    width:35%;
+    height:400px;
+    .notice_title{       
+         &::before{
+            font-size:30px;
+            content: "\e91a";
+            font-family:"icomoon";
+            color:#409EFF;
+          }
+    }
+    .natice_content{
+        .divstyle(400px);
+
+    }
+}
+.notice_title,.active_title{
+    font-size:25px;
+    color:#606266;
+}

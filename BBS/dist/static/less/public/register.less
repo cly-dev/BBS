@@ -1,0 +1,91 @@
+@import "../commit.less";
+main{
+    border: 1px solid transparent;
+    width: 100%;
+    height: 100%;
+    background-color: #69b4ca;
+    text-align: center;
+    position: relative;
+}
+.Register_container{
+    padding-top: 10px;
+    border-radius: 10px;
+    width: 780px;
+    margin: 200px auto;
+    background: rgba(255, 255, 255,0.6);
+    // padding-bottom: 40px;
+}
+.Register_step{
+    color: black;
+}
+.Register_form{
+    width: 80%;
+    margin: 40px auto;
+    section[class^="Register"]{
+          position: relative;
+          width: 80%;
+          height:20%;
+          margin:30px auto;
+          background-color:white;
+          border-radius: 5px;
+          .clearfloat();
+          span:first-of-type{
+            border-right: 1px solid #EBEEF5;
+            font-size: 20px;
+            line-height: 40px;
+            height:40px;
+            width: 40px;
+            display: block;
+            float: left;
+            background-color:#F2F6FC;
+          }
+          
+         input,select{
+           border: none;
+           text-indent: 5px;
+           float: left;
+           width:89.4%;
+           height: 40px;
+           outline:none;
+         }
+      }
+
+      .Register_psd,.Register_comfirmpsd{
+        &:hover .icon{
+          display: block;
+        }
+      }
+      .icon{
+        cursor: pointer;
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translate(0,-50%);
+      }
+}
+.Register_footer{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+}
+.input_error{
+    display:none;
+    position: absolute;
+    bottom:-22px;
+    display: block;
+    font-size: 13px;
+    color: #F56C6C;
+    letter-spacing:1px;
+}
+.login_btn{
+  line-height: 60px;
+  height: 60px;
+  font-size: 18px;
+  padding-right: 10px;
+  text-align: right;
+  a{
+    color: #69b4ca;
+  }
+}

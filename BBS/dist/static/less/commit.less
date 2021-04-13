@@ -1,0 +1,248 @@
+//hover事件样式
+.active{
+  color: #2299DD;
+  font-weight: bold;
+}
+//小三角形
+.boder-xin(@size,@color1,@color2,@color3,@color4){
+   width: 0;
+   height: 0;
+   border-top:@size solid @color1;
+   border-bottom:@size solid @color2;
+   border-left: @size solid @color3;
+   border-right:@size solid @color4;
+ }
+ //多行省略号
+ .moretextsellipsis(@line){
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: @line;
+   overflow: hidden;
+ }
+ //单行省略号
+ .textsellipsis(){
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  //li样式
+ .colorli(){
+   background:#2299DD;
+   line-height:20px;
+   color: white;
+   border-radius:5px;
+ }
+ //title
+ .com_title(@color,@size){
+   font-size:28px;
+   font-weight: bold;
+   margin-top:20px;
+    i{
+      color:@color;
+      font-size:@size;
+    }
+ }
+ //常用修饰文字
+.text(@size,@color,@width){
+  margin-top:-2px;
+  width:@width;
+  display: inline-block;
+  color:@color;
+  font-size: @size;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 10px;
+}
+//修饰span等行元素
+.blockbox(@width,@height){
+  width: @width;
+  height: @height;
+  display: inline-block;
+}
+//边框
+.same_border(@height){
+ width:1480px;
+ background-color: white;
+ height:@height;
+ border-radius: 10px;
+ margin-top:20px;
+ overflow:hidden;
+}
+//修饰头部
+.headertitle(@centent){
+    width: 100%;
+    height: 60px;
+    border:1px solid #EBEEF5;
+    line-height:58px;
+    background-color: #f5f7fa;
+    span{
+      &:nth-of-type(1){
+        font-size:25px;
+        font-family:"";
+        color:black;
+        padding-left:20px;
+      &::before{
+        content:@centent;
+        font-family:"icomoon";
+        color:gray;
+        padding-right:10px;
+        line-height:50px;
+      }
+      }
+    }
+}
+.identicalblock(@height){
+  height:@height;
+  width: 100%;
+  margin-top:-25px;
+}
+.text_size(@size){
+  font-size:@size;
+  font-weight:bold;
+}
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .icomoon(@margin){
+      margin-right:@margin;
+      font-family:"icomoon";
+  }
+  .clearfloat(){
+    &::after{
+      content: "";
+      clear: both;
+      display:block;
+    }
+  }
+  .triangleborder(@length,@color){
+     display: inline-block;
+     width: @length;
+     height: @length;
+     transform:rotate(-45deg);
+     -webkit-transform: rotate(-45deg);
+     -o-transform: rotate(-45deg);
+     -ms-transform: rotate(-45deg);
+     -moz-transform: rotate(-45deg);
+     border-right:1px solid @color;
+     border-bottom:1px solid @color;
+  }
+
+  .opration(){
+    li{
+      text-align: center;
+      float: left;
+      width: 20%;
+      font-size:14px;
+      color: #616161;
+      &:first-of-type{
+        &::before{
+          content: "\e9df";
+          .icomoon(4px);
+        }
+      }
+      &:nth-of-type(2){
+          margin-left:-20px;
+        &::before{
+          content: "\e9f7";
+           font-size:14px;
+          .icomoon(5px);
+          // display:inline-block;
+          // padding-top: 4px;
+        }
+      }
+      &:nth-of-type(3){
+        margin-left:-20px;
+        &::before{
+          content: "\ea0c";
+           font-size:14px;
+          .icomoon(5px);
+          // display:inline-block;
+          // padding-top: 4px;
+        }
+      }
+      &:nth-of-type(4){
+        margin-left:-20px;
+        &::before{
+          content: "\e9ac";
+           font-size:14px;
+          .icomoon(5px);
+          // display:inline-block;
+          // padding-top: 4px;
+        }
+      }
+    }
+  }
+
+
+  //页头样式
+  .domheader(){
+    cursor: pointer;
+    border:1px solid #E4E7ED;
+    height:60px;
+    line-height:60px;
+    span{
+        display: inline-block;
+        &:nth-of-type(1){
+            padding-right: 20px;
+            text-align: center;
+            line-height: 40px;
+            height: 40px;
+            border-right: 1px solid #DCDFE6;
+            color:#303133;
+            width:80px;
+            font-size: 18px;
+            &::before{
+                content: "\ea40";
+                font-family:icomoon;
+                 color:#606266;
+                 margin-right: 5px;
+            }
+        }
+        &:last-child{
+            font-size: 23px;
+            margin-left: 20px;
+
+        }
+    }
+  }
+//部门页头样式
+.DepartmentHeader(@font,@color:rgba(226, 241, 8, 0.856)){
+  text-indent:10px;
+  display: block;
+  font-size: 25px;
+  height:55px;
+  line-height: 50px;
+  color: #303133;
+  border-top: 1px solid #EBEEF5;
+  border-left: 1px solid #EBEEF5;
+  border-right: 1px solid #EBEEF5;
+  border-style:1px;
+  &::before{
+      font-size:30px;
+      margin-right:8px;
+      content:@font;
+      font-family:"icomoon";
+      color:@color;
+    }
+}
