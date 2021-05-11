@@ -137,6 +137,9 @@ export default {
   },
   data: () => {
     return {
+      //图片路劲
+      imageSrc:'',
+      //纯文本
       text:"",
       //上传提示框
       dialogVisible: false,
@@ -163,13 +166,6 @@ export default {
         },
       },
     };
-  },
-  watch: {
-    content:(orderV,newV)=>{
-      // console.log(orderV);
-
-
-    },
   },
   props: {
     url: {
@@ -208,9 +204,16 @@ export default {
     //自定义事件传参
     editorInput(e) {
       this.text=$(".ql-editor").text().trim().length;
-     
+      let flay;
+      if(this.text >this.num){
+        flay=false;
+      }else{
+        flay=true;
+      }
+      this.$emit("update:numFlay",flay);
       this.$emit("editor", this.content);
-      this.$emit("text", $(".ql-editor").text());
+      this.$emit("update:text", $(".ql-editor").text());
+      // this.$emit("")
     },
     upload() {
       //上传事件
@@ -296,11 +299,9 @@ export default {
                 onUploadProgress: (e) => {},
               })
                 .then((res) => {
-                  console.log(res);
+            
                   //查看图片尺寸
                   if (res.data.code == "200") {
-                    //关闭上传提示框
-                    // this.formData.append("multipartFile","");
                     this.dialogVisible = false;
                     this.$message({
                       type: "success",
@@ -310,11 +311,9 @@ export default {
                   }
                   clearInterval(timer);
                   // 生成富文本图片
-                  this.content += `<p class="ql-align-center"><img src=${res.data.date} style='text-align:center' width='${imgWidth}' height='${imgHeight}'/></p>`;
+                  this.content += `<p class="ql-align-center"><img src=${res["data"].result} style='text-align:center' width='${imgWidth}' height='${imgHeight}'/></p>`;
+                  this.$emit("imgSrc",this.content);
                 })
-                .catch((err) => {
-                  console.log(err);
-                });
             }
           });
         }

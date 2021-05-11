@@ -6,7 +6,7 @@
       <span>我收藏的文章</span>
     </div>
     <!-- 主体 -->
-    <div class="CollectionArticle_mainer" v-if="tableData.lenth!=''">
+    <div class="CollectionArticle_mainer" v-if="total!=0">
         <!-- 数据 -->
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="文章名" width="180">
@@ -29,7 +29,7 @@
                 icon="el-icon-search"
                 circle
                 size="medium"
-                @click="handleEdit(scope.$index, scope.row)"
+                @click="handleSearch(scope.$index, scope.row)"
               ></el-button>
             </el-tooltip>
             <el-tooltip content="取消收藏" placement="top" effect="light">
@@ -47,12 +47,11 @@
       <!-- 分页 -->
       <el-pagination
         style="text-align: center"
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage1"
         :page-size="6"
         layout="total, prev, pager, next"
-        :total="tableData.length"
+        :total="total"
       >
       </el-pagination>
        </div>
@@ -66,32 +65,16 @@
 </template>
 
 <script>
+import {CollectionArticle,CollectionArticledelete} from '../../api/data';
 export default {
   data() {
     return {
+      //当前页码
       currentPage1: 5,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      //数据
+      tableData: [],
+      //条数
+      total:0,
     };
   },
   methods: {
@@ -100,28 +83,44 @@ export default {
         name: "collection",
       });
     },
-    handleEdit(index, row) {
-      console.log(index, row);
+    handleSearch(index, row) {
+      localStorage.setItem("articleId",row.articleId);
+      this.$router.push({
+        name:'articledetails',
+        params:{
+         articleId:row.articleId 
+        }
+      })
     },
-    handleDelete(index, row) {
-      console.log(index, row);
+    async handleDelete(index, row) {
+     let result=await CollectionArticledelete({
+       articleId:row.articleId
+     })
+     if(result){
+       if (result["data"].code=="200") {
+         this.message("success","取消成功");
+         this.tableData.splice(index,1);
+       }else{
+         this.message("warning","取消失败");
+       }
+     }
+
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+   async handleCurrentChange(val) {
+      let result=await CollectionArticle(`${this.$GetUserId()}/${val}`);
+      this.tableData=result["data"].result.data;
     },
   },
-  created(){
-    this.$axios({
-      url:"/collectionArticle/show/76f09dda-fdcf-45d6-aea4-5feb3e3c9a65",
-      method:"GET",
-    }).then(res=>{
-      console.log(res);
-    }).catch(err=>{
-      console.log(err);
-    })
+  async created(){
+      let result=await CollectionArticle(`${this.$GetUserId()}/1`);
+      if (result) {
+         if (result["data"].result.allDataNum!=0) {
+          this.total=result["data"].result.allDataNum;
+          this.tableData=result["data"].result.data;
+     }
+      }
+    
+     
   }
 };
 </script>

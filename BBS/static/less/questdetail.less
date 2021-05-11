@@ -181,3 +181,75 @@
   .activer{
     color:#409EFF !important;
   }
+  .portrait_hover{
+    position: relative;
+    .author_container{
+      // border: 1px solid;
+      border-bottom:1px solid #E4E7ED;
+       img{
+         float: left;
+         width: 80px;
+         height:80px;
+         vertical-align: middle;
+         // border: 1px solid;
+         box-shadow: 0px 0px 2px #e5e5e5;
+         }
+         .author_message{
+           float: left;
+           width:65%;
+           height:80px;
+           padding-bottom: 5px;
+           span{
+             display: inline-block;
+             width: 93%;
+             height: 30px;
+             line-height: 40px;
+             padding-left: 10px;
+             .textsellipsis();
+             &:first-of-type{
+               font-size: 15px;
+               padding-top: 5px;
+               font-size: 20px;
+               font-weight: bold;
+               color: black;
+             }
+             &:nth-of-type(2){
+               font-size: 16px;
+             }
+           }
+         }
+         .clearfloat();
+       }
+       .author_otherinfo{
+         width: 100%;
+         li{
+           float: left;
+           width:32%;
+           height:80px;
+           span{
+             display: inline-block;
+             width: 100%;
+             text-align: center;
+             &:first-of-type{
+               font-size: 16px;
+               height: 30px;
+               line-height: 30px;
+             }
+             &:nth-of-type(2){
+                height: 50px;
+                line-height: 40px;
+                color: black;
+                font-size: 20px;
+                font-weight: bold;
+             }
+           }
+         }
+          .clearfloat();
+       }
+      .author_operation{
+        text-align: center;
+      }
+   }
+   .mojor{
+    .textsellipsis();
+  }

@@ -7,7 +7,6 @@
 .detail{
   padding-top:10px;
   box-shadow: 0px 0px 5px #DCDFE6;
-  height: 5000PX;
 }
   .portrait_hover{
      position: relative;
@@ -117,14 +116,21 @@
       margin-left:-3px;
   }
   .push_time{
+      display:block;
+      width: 500px;
       color:#303133;
       font-size:14px;
       position: absolute;
       bottom:5px;
       left:0px;
   }
+  .article_label{
+    display: block;
+    margin-top: 25px;
+  }
 }
 .detail_main{
+  margin-top: 40px;
   // border: 1px solid;
   // min-height:150px;
   padding-left: 10px;
@@ -312,14 +318,6 @@
           margin: 0 auto;
           min-height: 40px;
           line-height: 40px;
-
-          // &:hover .operation_content{
-          //   display: block;
-          // }
-
-          .comment_support{
-            width: 13%;
-          }
           .reply_comment_support{
             width: 15%;
           }
@@ -365,7 +363,7 @@
           }
 
       .operation_content,.reply_operation_content{
-            width: 80%;
+            width: 70%;
             // border: 1px solid;
             float: left;
             display: none;
@@ -536,4 +534,7 @@
 @keyframes eyeball{
     0%{left: 9px;}
     100%{left: 1px;}
+}
+.mojor{
+  .textsellipsis();
 }

@@ -1,12 +1,13 @@
 <template>
-	<div id="shape-shifter">
+	<div style="height:100%">
+    <div id="shape-shifter">
     <div class="loginform">
          <h2>登录界面</h2>
          <div class="myform">
            <form>
               <div class="login_number">
                 <span class="iconfont icon-shenfenzhenghaoma" style="font-size:24px;color:#409EFF"></span>
-                  <input type="text" autocomplete="off" placeholder="学号/手机号/账号" required v-model="formData.studentId">
+                  <input type="text" autocomplete="off" placeholder="学号/手机号/账号" required v-model.trim="formData.studentId">
               </div>
               <!-- <div class="login_name">
                 <span class="iconfont icon-yonghu" style="color:#F56C6C"></span>
@@ -14,7 +15,7 @@
               </div> -->
               <div class="login_psd">
                  <span class="iconfont icon-mimasuo" style="color:#909399"></span>
-                <input type="password" autocomplete="off" placeholder="密码" required v-model="formData.password">
+                <input type="password" autocomplete="off" placeholder="密码" required v-model.trim="formData.password">
                 <span class="iconfont icon-zhengyan icon"  @mousedown="handleText" @mouseup="handlePsd"></span>
               </div>
               <div class="login_code">
@@ -26,15 +27,15 @@
               </div>
            </form>
            <div class="register">
+             <span><router-link to="/ForgetpassWord">忘记密码?</router-link></span>
                 <span>暂无账号?</span><router-link to="/register">去注册</router-link>
            </div>
          </div>
     </div>
-    <div class="footer">
-      <span>权归所有:国之重才团队&copy;</span>
-      <br/>
-       
     </div>
+     <footer>
+            <Footer Backcolor="#69b4ca" color="#303133"></Footer>
+    </footer>
 	</div>
 </template>
 <script>
@@ -60,7 +61,7 @@ import {Login} from "../../api/data";
     },
     computed:{
       checkForm(){
-          if(this.formData.studentId.trim()==""){
+          if(!this.formData.studentId){
             this.message('warning','账号不能为空');
             return false;
           }else{
@@ -100,18 +101,25 @@ import {Login} from "../../api/data";
             });
             if(result["data"].code=="200"){
               this.message('success','登录成功');
-              localStorage.setItem("token",result["data"].result);
+              localStorage.setItem("token",result["data"].result.token);
               this.$store.commit("handleLogin");
+              this.$store.commit("handleUser",{
+                  user:result["data"].result}
+                );
               this.$router.push({
                 name:"index"
               })
+            }else{
+              this.message("error",`登录失败,${result["data"].result}`);
             }
           }
       }
     },
-		mounted () {
-          
-         
+		components:{
+      Footer:()=>import("../public/Footer")
+    },
+    created(){
+      this.formData.studentId=this.$route.params.studentId && this.$route.params.studentId;
     }
 	}
 </script>

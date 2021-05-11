@@ -24,54 +24,65 @@
           <el-form-item label="详细地址" prop="place">
             <el-input v-model="ruleForm.place"></el-input>
           </el-form-item>
-          <el-form-item label="活动时间" required>
-            <el-col :span="11">
-              <el-form-item prop="date1">
-                <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="ruleForm.date1"
-                  style="width: 100%"
-                ></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col class="line" :span="2">-</el-col>
-            <el-col :span="11">
-              <el-form-item prop="date2">
-                <el-time-picker
-                  placeholder="选择时间"
-                  v-model="ruleForm.date2"
-                  style="width: 100%"
-                ></el-time-picker>
-              </el-form-item>
-            </el-col>
+          <!-- 活动时间 -->
+          <el-form-item label="活动时间" prop="data1">
+            <div class="block activity_time">
+              <el-date-picker
+                v-model="ruleForm.data1"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </div>
           </el-form-item>
+          <!-- 报名时间 -->
+          <el-form-item label="报名时间" prop="data2" >
+         <div class="block">
+              <el-date-picker
+              validate-event
+                v-model="ruleForm.data2"
+                format="yyyy-MM-dd HH:mm:ss"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </div>
+          </el-form-item>
+          <!-- 限制人数 -->
           <el-form-item label="限制人数" prop="num">
             <el-input v-model.number="ruleForm.num"></el-input>
           </el-form-item>
-          <!-- 上传图片 -->
+          <!-- 活动封面 -->
           <div class="activity_coverimg">
-            <span style="color: #606266">活动照片</span>
+            <span style="color: #606266">活动封面</span>
             <div class="upload_container">
-            <el-upload
-              :limit="2"
-              list-type="picture-card"
-              class="avatar-uploader"
-              multiple
-              action="/article/uploadArticleImage"
-              :show-file-list="true"
-              :before-upload="beforeAvatarUpload"
-              :http-request="CoverImgUpload"
-            >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <i
-                style="margin: -20px"
-                v-else
-                class="el-icon-plus avatar-uploader-icon"
-              ></i>
-            </el-upload>
+              <el-upload
+                :limit="1"
+                list-type="picture-card"
+                class="avatar-uploader"
+                multiple
+                action="/image/uploadImageSingle"
+                :show-file-list="true"
+                :before-upload="beforeAvatarUpload"
+                :http-request="CoverImgUpload"
+              >
+                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                <i
+                  style="margin: -20px"
+                  v-else
+                  class="el-icon-plus avatar-uploader-icon"
+                ></i>
+              </el-upload>
             </div>
           </div>
+          <!-- 活动性质 -->
           <el-form-item label="活动性质" prop="type">
             <el-checkbox-group v-model="ruleForm.type">
               <el-checkbox label="日常聚会" name="type"></el-checkbox>
@@ -108,27 +119,38 @@
 </template>
 
 <script>
-import upload from "../../minxin/upload";
+let activityTime=[];
+let enrollTime=[];
+import { AddActivity } from "../../api/data";
+import upload from "../../minxin/uploadImg";
 export default {
   mixins: [upload],
   data() {
     return {
+      filetype:"activity",
+      value1:"",
       //图片
       active: 1,
       ruleForm: {
         name: "",
         region: "",
         place: "",
-        date1: "",
-        date2: "",
+        date1: [],
+        date2:[],
         num: null,
         type: [],
         desc: "",
       },
       rules: {
+        that:this,
         name: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 5, max: 20, message: "长度在 5 到 20 个字符", trigger: "blur" },
+          {
+            min: 5,
+            max: 20,
+            message: "长度在 5 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         region: [
           { required: true, message: "请选择活动区域", trigger: "change" },
@@ -137,7 +159,7 @@ export default {
         num: [
           {
             type: "number",
-            message: "请输入数字",
+            message: "请输入人数",
             required: true,
             trigger: "blur",
           },
@@ -147,26 +169,120 @@ export default {
             trigger: "blur",
           },
         ],
-        date1: [
+         data1: [
           {
-            type: "date",
+            type: "array",
             required: true,
-            message: "请选择日期",
             trigger: "change",
+            validator(rule,value,callback){
+              if(value==null){
+                callback("请输入日期");
+              }else{
+                  let date1=value[0];
+                  let data_Arr1=date1.split(" ");
+                  let date_Arr2=data_Arr1[0].split("-");
+                  let date_Arr3=data_Arr1[1].split(":");
+                  DateFlay(date_Arr2,date_Arr3,callback)
+                  let date2=value[1];
+                  
+                  let dateEnd=date2.split(" ");
+                 
+                  let date_Arr4=dateEnd[0].split("-");
+                  if(date_Arr4[1]==date_Arr2[1]){
+                    if(date_Arr4[2]-date_Arr2[2]>15){
+                      callback("活动时间最多为15天");
+                    }
+                  }else{
+                    if((date_Arr4[2]+30)-date_Arr2[2]>15){
+                      callback("活动时间最多为15天");
+                      }
+                  }
+                if(enrollTime!=""){
+                let enrollStart=enrollTime[1].split(" ");
+                let enroll_Arr1=enrollStart[0].split("-");
+                let enroll_Arr2=enrollStart[1].split(":");
+                if(date_Arr2[1]<enroll_Arr1[1]){
+                  callback("活动参与时间不能小于报名时间");
+                }else if(date_Arr2[1]==enroll_Arr1[1]){
+                  if(date_Arr2[2]<enroll_Arr1[2]){
+                    callback("活动参与时间不能小于报名截止时间");
+                  }else if (date_Arr2[2]==enroll_Arr1[2]) {
+                    if(date_Arr3[0]<enroll_Arr2[0]){
+                    callback("活动参与时间不能小于报名截止时间");
+                  }else if(date_Arr3[0]==enroll_Arr2[0]){
+                    if(date_Arr3[1]<enroll_Arr2[1]){
+                      callback("活动参与时间不能小于报名截止时间");
+                    }else if(date_Arr3[1]==enroll_Arr2[1]){
+                      if(date_Arr3[2]<enroll_Arr2[2]){
+                        callback("活动参与时间不能小于报名截止时间");
+                      }
+                    }
+                  }
+                  }
+                }
+              }
+               activityTime=value[0];
+              }
+              callback();
+            }
           },
         ],
-        date2: [
+        data2: [
           {
-            type: "date",
+            type: "array",
             required: true,
-            message: "请选择时间",
             trigger: "change",
+            validator(rule,value,callback){
+              console.log(value);
+               if(value==null){
+                callback("请输入日期");
+              }else{
+                  let date1=value[0];
+                  let data_Arr1=date1.split(" ");
+                  let date_Arr2=data_Arr1[0].split("-");
+                  let date_Arr3=data_Arr1[1].split(":");
+
+                  let date2=value[1];
+                  let date_Arr4=date2.split(" ");
+                  let date_Arr5=date_Arr4[0].split("-");
+                  let date_Arr6=date_Arr4[1].split(":");
+                  DateFlay(date_Arr2,date_Arr3,callback);
+                  enrollTime=value;
+                  if(activityTime!="") {
+                    let activityStart=activityTime.split(" ");
+                    let activity_Arr1=activityStart[0].split("-");
+                    let activity_Arr2=activityStart[1].split(":")
+                    if(date_Arr5[1]>activity_Arr1[1]){
+                      callback("报名截止时间不能大于活动开始时间");
+                    }else if(date_Arr5[1]==activity_Arr1[1]){
+                      if(date_Arr5[2]>activity_Arr1[2]){
+                        callback("报名截止时间不能大于活动开始时间");
+                      }else if(date_Arr5[2]==activity_Arr1[2]){
+                        if (date_Arr6[0]>activity_Arr2[0]) {
+                            callback("报名截止时间不能大于活动开始时间");
+                        }else if(date_Arr6[0]==activity_Arr2[0]){
+                           if (date_Arr6[1]>activity_Arr2[1]) {
+                            callback("报名截止时间不能大于活动开始时间");
+                        }else if(date_Arr6[1]==activity_Arr2[1]){
+                            if (date_Arr6[2]>activity_Arr2[2]) {
+                            callback("报名截止时间不能大于活动开始时间");
+                        }
+                        }
+                        }
+                      }
+                    }
+                  }
+              callback();
+
+              }
+            }
           },
         ],
         type: [
           {
             type: "array",
             required: true,
+            len:1,
             message: "请至少选择一个活动性质",
             trigger: "change",
           },
@@ -181,9 +297,39 @@ export default {
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
+        //成功提交
         if (valid) {
-          alert("submit!");
+          console.log("提交");
+          async function addActivity(ruleForm, image) {
+            let result = await AddActivity({
+              activityTitle: ruleForm.name,
+              activityContent: ruleForm.desc,
+              activityImage: image,
+              activityStartTime: ruleForm.data1[0],
+              activityEndTime: ruleForm.data1[1],
+              activityObject:"自愿报名",
+              recruitStartTime:ruleForm.data2[0],
+              recruitEndTime:ruleForm.data2[1],
+              totalNum:ruleForm.num,
+              joinNum:0,
+              activityPlace:ruleForm.region,
+              activityAddress:ruleForm.place,
+              activityType:ruleForm.type[0]
+            });
+            return result;
+          }
+          let result=addActivity(this.ruleForm,this.image);
+          result.then(res=>{
+            console.log(res);
+            if(res["data"].code=="200"){
+              this.message("success","创建成功");
+            }
+          }).catch(err=>{
+            console.log(err);
+          })
+              
         } else {
+          
           console.log("error submit!!");
           return false;
         }
@@ -197,6 +343,38 @@ export default {
     $(".el-step.is-vertical .el-step__line").css("top", "20px");
   },
 };
+function DateFlay(date_Arr2,date_Arr3,callback){
+              let date=new Date();
+                  //判断年月日
+                  if(date_Arr2[0]<date.getFullYear()|| date_Arr2[0]>(date.getFullYear() + 1)){
+                callback("年份错误")
+                  }else{
+                    if(date_Arr2[1]==(date.getMonth()+1)){
+                      if(date_Arr2[2]<date.getDate()){
+                      callback("日期错误");
+                      }else{
+                        if(date_Arr2[2]==date.getDate()){
+                        if(date_Arr3[0]<date.getHours()){
+                          callback("选择时间小于当前时间:小时错误");
+                        }else if(date_Arr3[0]==date.getHours()){
+                          if(date_Arr3[1] <date.getMinutes()){
+                            callback("选择时间小于当前时间:分钟错误");
+                          }else if(date_Arr3[1] ==date.getMinutes()){
+                            if(date_Arr3[2] <date.getSeconds()){
+                             callback("选择时间小于当前时间:秒数错误");
+                            }
+                          }
+                        }
+                        }
+                      }
+                    }else if(date_Arr2[1]<(date.getMonth()+1)){
+                     callback("选择月份小于当前月份");
+                    }else if(date_Arr2[1]>(date.getMonth()+2)){
+                      callback("只能选择最近1个月");
+                    }
+                  }
+
+}
 </script>
 
 <style lang="less" scoped>

@@ -14,7 +14,7 @@
     <div class="follow_container">
       <!-- 我关注的 -->
       <div class="my_care">
-        <div v-if="MycareData != ''" class="care_container">
+        <div v-if="MycareData!=''" class="care_container">
           <div class="care_user" v-for="(value, key) in MycareData" :key="key">
             <el-popover placement="right-end" width="200" trigger="hover">
               <div class="core_info">
@@ -43,6 +43,7 @@
           <span>空空如也</span>
         </div>
         <el-pagination
+          v-if="MycareData.length!=0"
           style="text-align: center; margin-top: 20px"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -55,7 +56,7 @@
       </div>
       <!-- 关注我的 -->
       <div class="care_my">
-        <div v-if="CaremyData != ''" class="care_container">
+        <div v-if="CaremyData!=''" class="care_container">
           <div class="care_user" v-for="(value, key) in CaremyData" :key="key">
             <el-popover placement="right-end" width="200" trigger="hover">
               <div class="core_info">
@@ -89,8 +90,8 @@
           <span>空空如也</span>
         </div>
         <el-pagination
+        v-if=" CaremyData.length!=0"
           style="text-align: center; margin-top: 20px;position:bottom:0"
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage2"
           :page-size="8"
@@ -115,83 +116,11 @@ export default {
       //标识事件状态
       PageEnum:false,
       //我关注的
-      MycareData: [
-        {
-          userId: "528de48c-7fa8-467d-8fe4-cd60820b80c6",
-          studentId: "1550888880",
-          password: null,
-          userName: "阿勇",
-          realName: null,
-          sex: null,
-          birthday: null,
-          enterSchoolTime: null,
-          major: null,
-          mobilePhone: null,
-          email: null,
-          selfImage: null,
-          createTime: null,
-          status: 1,
-          idolSum: 2,
-          fansSum: 0,
-        },
-        {
-          userId: "e257c2f7-30df-4235-a5c4-6d0f7dd5df66",
-          studentId: "15503077799003",
-          password: null,
-          userName: null,
-          realName: null,
-          sex: null,
-          birthday: null,
-          enterSchoolTime: null,
-          major: null,
-          mobilePhone: null,
-          email: null,
-          selfImage: null,
-          createTime: null,
-          status: 1,
-          idolSum: 1,
-          fansSum: 0,
-        },
-      ],
+      MycareData: [],
       //关注我的
-      CaremyData: [
-        {
-          userId: "528de48c-7fa8-467d-8fe4-cd60820b80c6",
-          studentId: "1550888880",
-          password: null,
-          userName: "阿勇",
-          realName: null,
-          sex: "男",
-          birthday: "2000",
-          enterSchoolTime: null,
-          major: null,
-          mobilePhone: null,
-          email: "266311",
-          selfImage: null,
-          createTime: "2021/3/21",
-          status: 1,
-          idolSum: 2,
-          fansSum: 0,
-        },
-        {
-          userId: "e257c2f7-30df-4235-a5c4-6d0f7dd5df66",
-          studentId: "15503077799003",
-          password: null,
-          userName: null,
-          realName: null,
-          sex: null,
-          birthday: null,
-          enterSchoolTime: null,
-          major: null,
-          mobilePhone: null,
-          email: null,
-          selfImage: null,
-          createTime: null,
-          status: 1,
-          idolSum: 1,
-          fansSum: 0,
-        },
-      ],
+      CaremyData: [],
+      //条数
+      total:0
     };
   },
   methods: {
@@ -200,7 +129,8 @@ export default {
      let result=await CancelFocus({
           userId:value.userId
      });
-     if(result["data"].code=="200"){
+     if (result) {
+           if(result["data"].code=="200"){
         this.$message({
            message:"已取消",
            type:'success',
@@ -208,13 +138,14 @@ export default {
          });
          this.MycareData.splice(index,1);
      }
+     }
+ 
    },
     //关注关注我的人
     async handleSupport(value) {
       let result=await FocusOther({
         userId: value.userId
       })
-      
       if(result["data"].code=="200"){
           this.$message({
             type: "success",
@@ -251,9 +182,6 @@ export default {
         $(".care_my").fadeOut();
       }
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     //分页查询
     async handleCurrentChange(val) {
       let result;
@@ -273,38 +201,20 @@ export default {
     },
   },
   async created() {
-
       async function Focus(){
         let result=await ShowFocus();
           return result;
       }
-
       async function Fans(){
         let result=await ShowFans();
         return result;
       }
       let p1=Focus();
       let p2=Fans();
-
       Promise.all([p1,p2]).then(res=>{
-        console.log(res);
-
+        this.MycareData=res[0]["data"].result;
+        this.CaremyData=res[1]["data"].result;
       })
-      
-
-    // let that = this;
-    // function getMyCare() {
-    //   return that.$axios.post("/fans/showFans");
-    // }
-    // function getCareMy() {
-    //   return that.$axios.post("/fans/showFocus");
-    // }
-    // this.$axios.all([getMyCare(), getCareMy()]).then(
-    //   this.$axios.spread((acct, perms) => {
-    //     // this.MycareData=acct.data.date;
-    //     // this.CaremyData=perms.data.date;
-    //   })
-    // );
   },
 };
 </script>

@@ -2,15 +2,15 @@
   <div style="height:100%;display: flex;">
     <!-- 导航 -->
       <div class="department_nav">
-        <div class="logo">
-          <h2>logo+名字</h2>
+        <div class="logo_container">
+          
         </div>
         <!-- 个人信息 -->
         <div class="person_info">
-            <img src="../../../static/images/user.png" alt="请检查网络" class="person_portrait">
+            <img :src="!this.$store.state.user.selfImage?'../../../static/images/user.png':this.$store.state.user.selfImage " alt="请检查网络" class="person_portrait">
             <div class="info_container">
-                <span>阿wwwswww<img src="../../../static/images/grade/用户_等级3.png" class="grade_img"></span>
-                <span>咸鱼部部长</span>
+                <span>{{this.$store.state.user.userName}}<img src="../../../static/images/grade/用户_等级3.png" class="grade_img"></span>
+                <span></span>
             </div>
         </div>
         <!-- 导航菜单 -->
@@ -35,12 +35,12 @@
                         <router-link to="/department/my-department"> 
                             <li>我的部门</li>
                         </router-link>
-                        <router-link to="/department/createdepartment"> 
+                        <!-- <router-link to="/department/createdepartment"> 
                            <li>添加部门</li>
-                        </router-link>
-                        <router-link to="/department/admin-department"> 
+                        </router-link> -->
+                        <!-- <router-link to="/department/admin-department"> 
                         <li>管理部门</li>
-                        </router-link>
+                        </router-link> -->
                       </ul>
                </div>
                <!-- 消息 -->
@@ -95,7 +95,6 @@
 
    </div>
 </template>
-
 <script>
   export default{
     data:()=>{
@@ -168,7 +167,7 @@
       })
     },
     created(){
-
+        
     }
 
   }

@@ -29,7 +29,7 @@
          <li> <router-link to="/campus/collection">我的收藏</router-link></li>
           <li><router-link to="/campus/track">我的足迹</router-link></li>
           <li><router-link to="/campus/collection">我的权益</router-link></li>
-          <li><router-link to="/campus/collection">帮助中心</router-link></li>
+          <li><router-link to="/campus/help">帮助中心</router-link></li>
           <li><router-link to="/campus/collection">关于我们</router-link></li>
         </ul>
      </div>
@@ -72,7 +72,6 @@
   import headerForum from './HeaderForum.vue';
   import slideHeader from './SlideHeader.vue';
   import detailHeaader from "./DetailHeader.vue";
-
   let datalist=[
     {type:"system",title:"系统通知",centent:"恭喜你",time:"2020-12-11 10:36:12"},
     {type:"system",title:"系统通知",centent:"恭喜你",time:"2020-12-11 10:36:12"},
@@ -170,7 +169,6 @@
            //tabs切换事件
            doActive(index){
              let divs=document.querySelectorAll("[class^='centent_']");
-             console.log(divs);
              for(let i=0;i<divs.length;i++){
              divs[i].style.display="none";
              }
@@ -181,7 +179,6 @@
              this.show=!this.show;
               this.P.then(res=>{
                  this.loading_show=false;
-                console.log(res);
                 if(res==""){
                     this.msg_null=true;
                   }else{
@@ -205,7 +202,6 @@
                 if(this.msglist.length==0){
                   this.msg_null=true;
                 }
-                // this.$message.error('错了哦，这是一条错误消息');
            },
            //删除成功
            deletesuccess(){
@@ -224,24 +220,28 @@
         },
         mounted(){
           this.$nextTick(()=>{
+          
            //侧边保持不动事件
           $(document).on("scroll",()=>{
+            let end=new Date().getTime();
             if($(document).scrollTop() > 300){
               $(".information").css({top:$(document).scrollTop() + 30,right:"60px"});
-              // console.log(1111);
             }else{
               $(".information").css({"position":"absolute",top:"220px"});
-              // console.log(11111);
             }
-             // console.log($(".information").offset().top);
           })
           })
+            // let TimeStart=0;
           //头部切换事件
          window.addEventListener("scroll",(e)=>{
+           //防抖
+          //  let now=new Date().getTime();
+          //  if(now-TimeStart>=100){
+            //  TimeStart=now;
            if(localStorage.getItem("router")==""){
                this.assembly="headerForum";
             }else if(localStorage.getItem("router")=="campus"){
-            if(window.pageYOffset>100){
+            if(window.pageYOffset>150){
                 this.assembly="slideHeader";
             }
             else{
@@ -260,6 +260,7 @@
                  this.assembly="headerForum";
               }
             }
+          //  }
           })
         },
         created(){
@@ -280,14 +281,6 @@
             }
           }
         },
-       watch:{
-            msglist:((newV,orderV)=>{
-              if(newV.length==0){
-
-              }
-              console.log(newV.length);
-            })
-       },
        components:{
          headerForum,
          slideHeader,

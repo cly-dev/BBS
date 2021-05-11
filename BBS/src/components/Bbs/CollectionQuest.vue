@@ -4,7 +4,7 @@
       <span @click="comeBack">返回</span>
       <span>我收藏的问题</span>
     </div>
-    <div class="CollectionQuest_mainer" v-if="tableData!=''">
+    <div class="CollectionQuest_mainer" v-if="total!=0">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="问题名" width="180">
           <template slot-scope="scope">
@@ -46,7 +46,7 @@
         :current-page.sync="currentPage1"
         :page-size="6"
         layout="total, prev, pager, next"
-        :total="tableData.length"
+        :total="total"
       >
       </el-pagination>
     </div>
@@ -58,11 +58,16 @@
   </div>
 </template>
 <script>
+import  {CollectionQuestion} from '../../api/data';
 export default {
   data() {
     return {
-      currentPage1: 5,
+      //当前页码
+      currentPage1:1,
+      //数据
       tableData: [],
+      //总条数
+      total:0
     };
   },
   methods: {
@@ -74,14 +79,13 @@ export default {
     },
     //跳转详情事件
     handleWatch(index, row) {
-      console.log(index, row);
+     localStorage.setItem("questionId",row.questionId);
       this.$router.push({
         name:"questdetail",params:{title:row.questionId}
       })
     },
-    //q取消收藏事件
+    //取消收藏事件
     handleDelete(index, row) {
-      console.log(index, row);
       this.$axios({
         url:"/collectionQuestion/delete",
         method:"POST",
@@ -95,36 +99,28 @@ export default {
             message:"取消收藏成功",
             offset:100
           })
+          this.tableData.splice(index,1);
         }
     })
     },
     //
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
     },
     //切换页码事件
-    handleCurrentChange(val) {
-      this.$axios({
-        url:`/collectionQuestion/showByPage/6cae95a3-6052-4bcd-b55f-4ef36312c7cd/${val}/6`,
-        method:"GET"
-      }).then(res=>{
-        console.log(res);
-      })
-      console.log(`当前页: ${val}`);
+   async handleCurrentChange(val) {
+    let result=await CollectionQuestion(`${this.$GetUserId()}/${val}/6`,);
+     this.tableData=result["data"].result.data;
     },
   },
-  created(){
-    this.$axios({
-      url:"/collectionQuestion/show/76f09dda-fdcf-45d6-aea4-5feb3e3c9a65",
-      method:'GET',
-    }).then(res=>{
-      console.log(res);
-      this.tableData=res.data.date;
-    }).catch(err=>{
-      console.log(err);
-    })
+  async created(){
+    let result=await CollectionQuestion(`${this.$GetUserId()}/1/6`);
+    if(result["data"].result.allDataNum!=0){
+      this.tableData=result["data"].result.data;
+      this.total=result["data"].result.allDataNUm;
+    }
   }
-};
+
+}
 </script>
 
 

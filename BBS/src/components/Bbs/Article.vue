@@ -32,34 +32,11 @@
           </p>
         </transition>
       </div>
-      <!--文章副标题 -->
-      <!-- <div class="article_title">
-        <label for="articleTitle"
-          ><span style="color: #606266">&nbsp;&nbsp;文章副标题:</span
-          ><input
-            type="search"
-            name="articleTitle"
-            class="title_input"
-            autocomplete="off"
-            placeholder="请输入副标题(可选)"
-            v-model="formdata.subtitle"
-            @keyup="subTitleCheck()"
-        /></label>
-        <transition enter-active-class="animated fadeInDown">
-          <p
-            class="title_warn"
-            :style="{ color: subtitleWarn.color }"
-            v-show="warnSTitleFlag"
-          >
-            <span :class="subtitleWarn.icon"></span>{{ subtitleWarn.msg }}
-          </p>
-        </transition>
-      </div> -->
       <!-- 文章封面 -->
       <div class="article_coverimg">
         <span style="color: #606266">文章封面:</span>
           <el-upload
-            :limit="2"
+            :limit="1"
             list-type="picture-card"
             class="avatar-uploader"
             multiple
@@ -95,8 +72,9 @@
         </el-dialog> -->
           <!-- 富文本组件 -->
           <quillEditor
+            @imgSrc="handleImgUpload"
             :num="num"
-            @text="handText"
+            :text.sync="text"
             @editor="input"
             :url="url"
             :height="'450px'"
@@ -196,36 +174,18 @@ export default {
       content: null,
     };
   },
-  watch: {
-    content: (newV, orderV) => {
-      console.log(newV);
-    },
-    $route(to, from) {
-      // console.log(to);
-      // console.log("1");
-    },
-  },
   methods: {
-    //封面图片上传
+    //获取上传图片
+    handleImgUpload(val){
+      this.formdata.content+=val;
+    },
+    //富文本类容
     input(content) {
       this.formdata.content = content;
-    },
-    //判断图片类型
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
     },
     //获取文章纯文本
     handText(text){
               this.text=text;
-           
             },
     //校验主标题
     TitleCheck() {
@@ -251,30 +211,6 @@ export default {
         return false;
       }
     },
-    //校验副标题
-    // subTitleCheck() {
-    //   if (this.formdata.subtitle.trim().length < 20 && this.formdata.subtitle.trim().length > 5) {
-    //     this.$store.commit("nocanQuit");
-    //     this.subtitleWarn.msg = "正确";
-    //     this.subtitleWarn.color = "#67C23A";
-    //     this.subtitleWarn.icon = "el-icon-success";
-    //     return true;
-    //   } else if (this.formdata.subtitle.trim() == "") {
-    //     this.$store.commit("canQuit");
-    //     this.subtitleWarn.msg = "副标题不能为空!";
-    //     this.warnSTitleFlag = true;
-    //     this.subtitleWarn.color = "#F56C6C";
-    //     this.subtitleWarn.icon = "el-icon-error";
-    //     return false;
-    //   } else {
-    //     this.$store.commit("nocanQuit");
-    //     this.subtitleWarn.msg = "副标题长度在5~20之间!";
-    //     this.warnSTitleFlag = true;
-    //     this.subtitleWarn.color = "#F56C6C";
-    //     this.subtitleWarn.icon = "el-icon-error";
-    //     return false;
-    //   }
-    // },
     //校验类型选择
     NatureCheck() {
       if (this.formdata.type.length == 0) {
@@ -301,7 +237,6 @@ export default {
       if (
         !(this.TitleCheck() && this.formdata.content != null && this.NatureCheck())
       ) {
-        console.log((this.formdata));
         this.$message({
           type: "error",
           message: "请检查输入的内容",
@@ -316,9 +251,10 @@ export default {
             content:this.formdata.content,
             article_image:this.image,
             label1:this.formdata.type[0],
-            label2:this.formdata.type[1],
-            label3:this.formdata.type[2],
-            label4:this.formdata.type[3]})
+            label2:this.formdata.type[1]?this.formdata.type[1] : '',
+            label3:this.formdata.type[2]?this.formdata.type[2] : '',
+            label4:this.formdata.type[3]?this.formdata.type[3] : ''
+            })
             if(result["data"].code=="200"){
                   this.$message({
                      message: "发表成功",
@@ -326,8 +262,9 @@ export default {
                       offset:100,
                    });
                 this.$store.commit("canQuit");
+                localStorage.setItem("articleId",result["data"].result);
                 this.$router.push({
-                 name: "articledetails",params:{id:result["data"].date}
+                 name: "articledetails"
                  })
             }
       }

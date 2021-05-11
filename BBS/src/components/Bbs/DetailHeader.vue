@@ -20,15 +20,15 @@
 </template>
 
 <script>
-  import eventBus from '../../eventBus.js';
+  import {LikeArticle,CancelLikeArticle,IsLikeArticle} from "../../api/data";
   export default {
     name:'detailHeader',
     data:()=>{
       return{
+        articleId:"",
           SupportFlay:true,
           //标题
           title:'',
-          artlicleId:"",
          //支持图片路劲
          SupportImg:'../../../static/images/campus/detail/article_beforesupport.png',
          //踩图片路径
@@ -36,17 +36,11 @@
       }
     },
     methods:{
-      SupportClick(){
+     async SupportClick(){
        if(this.SupportFlay){
-        this.$axios({
-          url:"/article/likeArticle",
-          method:"POST",
-          params:{
-            articleId:this.articleId
-          }
-        }).then(res=>{
-          console.log(res);
-          if(res.data.code=="200"){
+         let result=await LikeArticle({articleId:this.articleId})
+         if (result) {
+           if(result["data"].code=="200"){
             this.$message({
               type:"success",
               message:"点赞成功",
@@ -56,18 +50,14 @@
              this.SupportImg="../../../static/images/campus/detail/article_aftersupport.png";
             this.StampImg="../../../static/images/campus/detail/article_beforestamp.png";
           }
-        })
+         }
+          
        }else{
-         console.log(this.articleId);
-          this.$axios({
-          url:"/article/cancelLikeArticle",
-          method:"POST",
-          params:{
+         let res= await CancelLikeArticle({
             articleId:this.articleId
-          }
-        }).then(res=>{
-          console.log(res);
-          if(res.data.code=="200"){
+         })
+         if(res){
+          if(res["data"].code=="200"){
             this.$message({
               type:"success",
               message:"取消点赞成功",
@@ -76,7 +66,7 @@
               this.SupportFlay=true;
              this.SupportImg="../../../static/images/campus/detail/article_beforesupport.png";
           }
-        })
+         }
        }
       },
       StampClick(){
@@ -84,25 +74,16 @@
         this.StampImg="../../../static/images/campus/detail/article_afterstamp.png";
       }
     },
-    created(){
+    async created(){
+          this.articleId=localStorage.getItem("articleId");
           this.title=JSON.parse(localStorage.getItem("article")).title;
-          this.articleId=JSON.parse(localStorage.getItem("article")).articleId;
-          this.$axios({
-        url:"/article/isLikeArticle",
-        method:"POST",
-        params:{
-          articleId:this.articleId
-        }
-      }).then(res=>{
-        console.log(res);
-        if(res.data.code=="200"){
+          let result=await IsLikeArticle({articleId:this.articleId});
+          if(result["data"].code=="200"){
             this.SupportFlay=false;
-          this.SupportImg=" .../../../static/images/campus/detail/article_aftersupport.png";
-        }else if(res.data.code=="500"){
+            this.SupportImg=" .../../../static/images/campus/detail/article_aftersupport.png";
+         }else if(result["data"].code=="500"){
            this.SupportImg=" .../../../static/images/campus/detail/article_beforesupport.png"
         }
-      })
-       
     },
     mounted() {
     }

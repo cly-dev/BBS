@@ -5,15 +5,11 @@
     <!-- 主体 -->
     <div class="Identification_container">
       <el-collapse v-model="activeNames" @change="handleChange" accordion>
-        <el-collapse-item title="学生会 Student-union" name="1" class="first">
-          <div class="Department_post" v-for="(value, key) in post" :key="key">
-            {{ value }}
-            <div class="Identification_btn">
-              <el-button type="danger" size="mini" @click="handMainIdent(value)">去认证</el-button>
-            </div>
-          </div>
+        <!-- 部门列表 -->
+        <el-collapse-item v-for="(value,index) in departmentGrade" :key="value.departmentId" :title="value.departmentName" :name="index">
+          <!-- 子级部门 -->
           <el-collapse v-model="activeName" accordion>
-            <el-collapse-item  v-for="(item,index) in department" :key="index" :title="item" :name="index+1">
+            <el-collapse-item  v-for="(item,index) in departmentChild" :key="index" :title="item.departmentName" :name="index+1">
               <div
                 class="Department_post"
                 v-for="(value, key) in charge"
@@ -27,33 +23,6 @@
             </el-collapse-item>
           </el-collapse>
         </el-collapse-item>
-        <el-collapse-item title="团委 League-committee" name="2" class="second">
-          <div>
-            控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；
-          </div>
-          <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-        </el-collapse-item>
-        <el-collapse-item
-          title="自律办 SelfdisciplineAssociation"
-          name="3"
-          class="thead"
-        >
-          <div>简化流程：设计简洁直观的操作流程；</div>
-          <div>
-            清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；
-          </div>
-          <div>
-            帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。
-          </div>
-        </el-collapse-item>
-        <!-- <el-collapse-item title="可控 Controllability" name="4">
-          <div>
-            用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；
-          </div>
-          <div>
-            结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。
-          </div>
-        </el-collapse-item> -->
       </el-collapse>
     </div>
     <el-dialog
@@ -85,7 +54,7 @@
               list-type="picture-card"
               class="avatar-uploader"
               multiple
-              action="/article/uploadArticleImage"
+              action="/image/uploadImageSingle"
               :show-file-list="true"
               :before-upload="beforeAvatarUpload"
               :http-request="CoverImgUpload"
@@ -113,15 +82,26 @@
   </div>
 </template>
 <script>
-import upload from "../../minxin/upload";
+let num=4;
+import {GetDepList,AddDepCheck} from "../../api/data";
+import uploadImg from "../../minxin/uploadImg";
 export default {
- mixins:[upload],
+ mixins:[uploadImg],
   data() {
     return {
+      
+          //上传照片类型
+          filetype:"head",
+          //父级部门
+          departmentGrade:[],
+          //子级部门
+         departmentChild:[],
+        //认证表单
          ruleForm: {
           name: '',
           grade: '',
         },
+        //校验表单
         rules: {
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -130,27 +110,39 @@ export default {
             { required: true, message: '请输入年级', trigger: 'blur' }
           ],
         },
-        activeName:["1"],
+      activeName:["1"],
       centerDialogVisible:false,
       activeNames: ["1"],
       //学生会主要职位
       post: ["学生会主席", "学生会副主席"],
-      //部门名
-      department:["艺术团","体育部","宣传部"],
-
+      //子部门
       charge: ["第一负责人", "第二负责人","干事"],
     };
   },
   methods: {
-    handleChange(val) {
-      console.log(val);
+    //请求子部门
+   async handleChange(val) {
+     if(typeof val!="string"){
+       if (num!=val) {
+        num=val;
+        let parentId=this.departmentGrade[val].departmentId;
+        let result=await GetDepList({parentId:this.departmentGrade[val].departmentId});
+        this.departmentChild=result["data"].result;
+       }
+     }
     },
+    //校验表单
     submitForm(formName) {
         this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
+          if (valid && this.image!="") {
+             DepCheck(this.ruleForm,this.image).then(res=>{
+              if (res["data"].code=="200") {
+                  this.message("success","提交成功,请等待审核");
+              }else{
+                this.message("warning","提交失败");
+              }
+            })
           } else {
-            console.log('error submit!!');
             return false;
           }
         });
@@ -158,19 +150,18 @@ export default {
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-
     //核心职位
     handMainIdent(value){
-        console.log(value);
         $(".el-dialog__title").text(`${value}认证`);
         this.centerDialogVisible=true;
     },
       //显示认证职位
     Identifacationling(item,value){
-        console.log(item,value);
-        $(".el-dialog__title").text(`${item}${value}认证`);
+        Object.defineProperty(this.ruleForm,"departmentId",{
+          value:item.departmentId
+        });
+        $(".el-dialog__title").text(`${item.departmentName}${value}认证`);
         this.centerDialogVisible=true;
-
     }
 
   },
@@ -179,7 +170,30 @@ export default {
     $(".second .el-collapse-item__header").eq(0).css("font-size", "18px");
     $(".thead .el-collapse-item__header").eq(0).css("font-size", "18px");
   },
+
+  async created(){
+    if (this.$store.state.identity!='') {
+      this.message("warning","已认证完成");
+      setTimeout(() => {
+        this.$router.push({
+          name:"部门/我的部门",
+        })
+      },1000);
+    }
+    //获取部门列表
+    let result=await GetDepList({departmentGrade:"一级部门"});
+    this.departmentGrade=result["data"].result;
+  }
 };
+  async function DepCheck(ruleForm,image){
+              let result=await AddDepCheck({
+                departmentId:ruleForm.departmentId,
+                realName:ruleForm.name,
+                grade:ruleForm.grade,
+                imagePath:image
+              });
+              return result;
+            }
 </script>
 
 <style lang="less" scoped>

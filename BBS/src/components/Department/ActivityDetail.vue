@@ -22,21 +22,23 @@
         <span>发起人:</span>
         <span>活动时间:</span>
         <span>活动地址:</span>
+        <span>限制人数:</span>
         <span>活动人数:</span>
         <span>活动状态:</span>
         <span>活动描述:</span>
       </div>
       <div class="ActivityDetail_data">
-        <span>学雷锋</span>
-        <span>阿勇</span>
-        <span>20210313~20120314</span>
-        <span>教学楼</span>
-        <span>60人</span>
-        <span>进行中</span>
-        <span>学雷锋,作新风</span>
+        <span>{{data.activityTitle}}</span>
+        <span>{{data.userRealName}}</span>
+        <span>{{data.recruitStartTime}}~{{data.recruitEndTime}}</span>
+        <span>{{data.activityPlace}}</span>
+        <span>{{data.totalNum}}</span>
+        <span>{{data.joinNum}}/{{data.totalNum}}</span>
+        <span>{{data.activityStatus}}</span>
+        <span>{{data.activityContent}}</span>
         <div class="ActivityDetail_btn">
-          <el-button type="primary">点击报名</el-button>
-          <el-button type="info" @click="backActivityList">返回</el-button>
+          <el-button type="primary" :disabled="DisabledFlay()" @click="handleSingUp(data)">{{JoinFlay()}}</el-button>
+          <el-button  @click="backActivityList">返回</el-button>
         </div>
       </div>
     </div>
@@ -45,18 +47,79 @@
 </template>
 
 <script>
+import{GetDetailActivity,AddJoinActivity,CancelJoin}from '../../api/data';
 export default {
   data(){
     return{
-
+        data:{ }
     }
   },
   methods:{
+    //返回
     backActivityList(){
       this.$router.push({
         name:"活动/全部活动"
       })
+    },
+    //点击报名
+    async handleSingUp(value){
+      if (value.join) {
+        let result=await CancelJoin({activityId:value.activityId});
+        console.log(result);
+        if(result['data'].code=="200"){
+          this.message("success","取消成功");
+        value.joinNum--;
+         value.join=false;
+        }
+      }else{
+      let result=await AddJoinActivity({activityId:value.activityId});
+      console.log(result);
+      if(result["data"].code=="200"){
+        this.message("success","报名成功");
+        value.joinNum++;
+         value.join=true;
+      }
+      }
+    },
+    //按钮状态
+    DisabledFlay(){
+    if(!($.isEmptyObject(this.data))){
+      if(!this.data.join){
+         if(this.data.joinNum<this.data.totalNum){
+          return false;
+        }else{
+          return true;
+        }
+      }
     }
+  },
+   //按钮文字提醒
+  JoinFlay(){
+    if(!($.isEmptyObject(this.data))){
+      if (!this.data.join) {
+        if (this.data.joinNum==this.data.totalNum) {
+          return "人数已满";
+        }else{
+          return "点击报名";
+        }
+      }else{
+        return "取消报名";
+      }
+    }
+  },
+  },
+  computed:{
+ 
+  },
+  async created(){
+    let activityId;
+    if(JSON.stringify(this.$route.params)=="{}"){
+      activityId=localStorage.getItem("activityId");
+    }else{
+      activityId=this.$route.params.activityId;
+    }
+    let result=await GetDetailActivity({activityId:activityId});
+    this.data=result["data"].result;
   }
 };
 </script>

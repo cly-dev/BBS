@@ -3,7 +3,7 @@
     <div class="MyQuesition_header">
       <span>我提问的</span>
     </div>
-    <div class="CollectionArticle_mainer">
+    <div class="CollectionArticle_mainer" v-if="total!=0">
       <!-- 数据 -->
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="问题名" width="180">
@@ -51,6 +51,7 @@
                 circle
                 size="medium"
                 type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
               ></el-button>
             
             </el-tooltip>
@@ -65,11 +66,14 @@
         :current-page.sync="currentPage1"
         :page-size="6"
         layout="total, prev, pager, next"
-        :total=" tableData.length"
+        :total="total"
       >
       </el-pagination>
       <!-- 当收藏为空时 -->
     </div>
+    <div class="MyQuesition_null" v-else>
+        <span>空空如也</span>
+      </div>
   </div>
 </template>
 
@@ -78,8 +82,12 @@ import {ShowAllQuestionByPage,DeleteQuestion} from "../../api/data";
 export default {
   data() {
     return {
+      //当前页码
       currentPage1: 1,
+      //数据
       tableData: [],
+      //总条数
+      total:0,
     };
   },
   methods: {
@@ -113,20 +121,26 @@ export default {
         }
     },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
     },
     async handleCurrentChange(val) {
-      let result=await ShowAllQuestionByPage(`6cae95a3-6052-4bcd-b55f-4ef36312c7cd/${val}/6`)
-      this.tableData=result["data"].date;
+      let result=await ShowAllQuestionByPage(`${this.$GetUserId()}/${val}/6`)
+      this.tableData=result["data"].result.data;
+      this.totalNum--;
+
     },
   },
     async created(){
-      let result=await ShowAllQuestionByPage("6cae95a3-6052-4bcd-b55f-4ef36312c7cd/1/6");
-      this.tableData=result["data"].date;
+      let result=await ShowAllQuestionByPage(`${this.$GetUserId()}/1/6`);
+         if(result["data"].result.allDataNum!=0){
+          this.total=result["data"].result.allDataNum;
+            this.tableData=result["data"].result.data;
+         }
+
     }
 };
 </script>
 
 <style lang="less">
 @import "../../../static/less/bbs/myquesition.less";
+@import "../../../static/less/article.less";
 </style>

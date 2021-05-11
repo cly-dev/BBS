@@ -4,37 +4,36 @@
       <span @click="goBack">返回</span>
       <span>我参加的活动</span>
     </div>
-    <div class="TAcontainer_mainer">
+    <div class="TAcontainer_mainer" v-if="total!=0">
       <el-table
         :data="
           tableData.filter(
             (data) =>
-              !search || data.name.toLowerCase().includes(search.toLowerCase())
+              !search || data.createTime.toLowerCase().includes(search.toLowerCase())
           )
         "
-        height="400"
         style="width: 100%; font-size: 18px"
       >
         <el-table-column
           label="日期"
-          prop="date"
+          prop="createTime"
           width="200"
           align="center"
           show-overflow-tooltip
           sortable
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="活动地址"
           prop="date"
           width="300"
           align="center"
           show-overflow-tooltip
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           label="活动名称"
-          prop="date"
+          prop="activityTitle"
           width="250"
           align="center"
           show-overflow-tooltip
@@ -42,49 +41,43 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="tag"
-          label="状态"
+          prop="activityStatus"
+          label="活动状态"
           width="150"
           :filters="[
-            { text: '报名中', value: '报名中' },
-            { text: '已结束', value: '已结束' },
+            { text: '报名中', value: '招募中' },
+            { text: '已结束', value: '活动结束' },
             { text: '进行中', value: '进行中' },
           ]"
           :filter-method="filterTag"
           filter-placement="bottom-end"
         >
           <template slot-scope="scope">
-            <el-tag :type="tagStyle(scope.row.tag)" disable-transitions>{{
-              scope.row.tag
+            <el-tag :type="tagStyle(scope.row.activityStatus)" disable-transitions>{{
+              scope.row.activityStatus
             }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-          label="报名人数"
-          prop="name"
+          label="发起人"
+          prop="realName"
           width="250"
           show-overflow-tooltip
           align="center"
         >
         </el-table-column>
         <el-table-column align="right">
-          <template slot="header" slot-scope="scope">
-            <el-input
-              v-model="search"
-              size="medium"
-              placeholder="输入关键字搜索"
-            />
-          </template>
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >查看详情</el-button
+             <el-tooltip class="item" effect="dark" content="查看详情" placement="top-start">
+            <el-button circle size="mini" icon="el-icon-search" @click="handleEdit(scope.$index, scope.row)"
+              ></el-button
             >
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除记录</el-button
-            >
+            </el-tooltip>
+             <el-tooltip class="item" effect="dark" content="取消报名" placement="top-start">
+                <el-button type="danger" icon="el-icon-delete" circle  size="mini"
+                     @click="handleDelete(scope.$index, scope.row)">
+                </el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -93,13 +86,13 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage1"
-      :page-size="100"
+      :page-size="8"
       style="text-align:center"
       layout="total, prev, pager, next"
-      :total="1000">
+      :total="total">
     </el-pagination>
     </div>
-      <div class="null_container">
+      <div class="null_container" v-else>
         <img src="../../../static/images/department/null_icon.png" alt="请检查网络" title="无">
         <span>您还未参加任何活动呢
           <router-link to="department/watch-activity">点击参加</router-link>
@@ -109,67 +102,16 @@
 </template>
 
 <script>
+import {GetJoinList,CancelJoin} from "../../api/data";
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "已取消",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          tag: "已结束",
-        },
-      ],
+      //数据
+      tableData: [],
       search: "",
-      currentPage1: 5,
+      currentPage1: 1,
+      //条数
+      total:''
     };
   },
   methods: {
@@ -179,10 +121,17 @@ export default {
       });
     },
     handleEdit(index, row) {
-      console.log(index, row);
+      this.$router.push({
+        name:'活动/活动详情',params:{activityId:row.activityId}
+      });
+      localStorage.setItem("activityId",row.activityId);
     },
-    handleDelete(index, row) {
-      console.log(index, row);
+    async handleDelete(index, row) {
+      let result=await CancelJoin({activityId:row.activityId});
+      if (result["data"].code=="200") {
+        this.message("success","取消成功");
+        this.tableData.splice(index,1);
+      }
     },
     filterTag(value, row) {
       return row.tag === value;
@@ -198,7 +147,7 @@ export default {
   computed: {
     tagStyle() {
       return (val) => {
-        if (val === "已结束" || val==="已取消") {
+        if (val === "活动结束" || val==="已取消") {
           return "danger";
         } else if (val === "进行中") {
           return "primary";
@@ -207,6 +156,12 @@ export default {
         }
       };
     },
+  },
+  async created() {
+            let result=await GetJoinList({pageNum:1});
+            this.tableData=result["data"].result.data;
+            this.total=result["data"].result.total;
+            console.log(result);
   },
 };
 </script>

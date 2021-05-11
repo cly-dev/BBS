@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 Vue.use(Router)
-
 export default new Router({
   routes: [
+    {
+      path:'/',
+      name:'index',
+      component:()=>import("../components/public/Index.vue")
+    },
     //登录
     {
       path: '/login',
@@ -19,10 +23,61 @@ export default new Router({
         auth:false
       }
     },
+    //忘记密码
+    {
+      path:'/ForgetpassWord',
+      name:'forgetpassword',
+      component:()=>import("../components/public/ForgetpassWord.vue")
+
+    },
+    //注册
     {
       path:"/register",
       name:'register',
       component:()=>import('../components/public/Register.vue')
+    },
+    //个人中心
+    {
+      path:"/people",
+      name:"my",
+      component:()=>import("../components/public/My.vue"),
+      redirect:{
+      name:'trends',
+      },
+      children:
+      [
+        {
+        path:"/people/index",
+        name:"peopleindex",
+        component:()=>import("../components/public/Myindex.vue"),
+        children:[
+          {
+          path:"/people/index/trends",
+          name:"trends",
+          component:()=>import("../components/public/Trends.vue")
+        },
+        {
+          path:"/people/index/article",
+          component:()=>import("../components/public/MyArticle.vue")
+        },{
+          path:"/people/index/question",
+          component:()=>import("../components/public/MyQuestion.vue"),
+        },{
+          path:"/people/index/core",
+          component:()=>import("../components/public/MyCore.vue"),
+        },{
+          path:"/people/index/fans",
+          component:()=>import("../components/public/MyFans.vue"),
+        },{
+          path:"/people/index/collection",
+          component:()=>import("../components/public/MyCore.vue"),
+        },{
+          path:"/people/index/release",
+          component:()=>import("../components/public/MyRelease.vue")
+        }
+      ]
+      }
+    ]
     },
     //论坛
     {
@@ -109,6 +164,10 @@ export default new Router({
            path:"/campus/Revise-question",
            name:"Revisequestion",
            component:()=>import("../components/Bbs/ReviseQuestion.vue")
+         },{
+           path:"/campus/help",
+           name:"Help",
+           component:()=>import("../components/Bbs/Help.vue")
          }
       ]
     },
@@ -163,10 +222,6 @@ export default new Router({
           path:"/department/my-department",
           name:"部门/我的部门",
           component:()=>import("../components/Department/MyDepartment.vue")
-        },{
-          path:"/department/admin-department",
-          name:"部门/管理部门",
-          component:()=>import("../components/Department/AdminDepartment.vue")
         },{
           path:"/department/identification",
           name:"部门/认证",

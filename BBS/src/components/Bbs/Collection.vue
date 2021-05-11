@@ -7,8 +7,8 @@
         <!--主体  -->
         <div class="collection_mainer">
             <div>
+             <!-- 收藏的文章 -->
         <router-link to="/campus/collection-article">
-
                 <img src="../../../static/images/campus/collection/collection_article.png" alt="请检查网络" title="收藏的文章">
               <span>收藏的文章</span>
         </router-link>
@@ -16,8 +16,8 @@
             </div>
 
             <div>
+                <!-- 收藏的问题 -->
          <router-link to="/campus/collection-question">
-
                 <img src="../../../static/images/campus/collection/collection_question.png" alt="请检查网络" title="收藏的问题">
               <span>收藏的问题</span>
         </router-link>

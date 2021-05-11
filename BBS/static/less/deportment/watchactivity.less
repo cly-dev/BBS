@@ -26,6 +26,7 @@
 .WatchActivity_mainer{
     .clearfloat();
     .WatchActivity_content{
+        cursor: pointer;
         position: relative;
         border-right: 1px dashed #C0C4CC;
         float: left;
@@ -34,29 +35,7 @@
         .WatchActivity_nav{
             height: 50px;
             background-color:#eaeaea;
-            li{
-                color: #303133;
-                text-align: center;
-                line-height: 50px;
-                height:50px;
-                font-size:17px;
-                margin-left:50px;
-                float: left;
-                &:first-of-type{
-                    margin-left:20px;
-                    font-size:19px;
-                    color:#F56C6C;
-                    &::before{
-                        vertical-align:middle;
-                        content: "\ea4c";
-                        font-size: 20px;
-                        .icomoon(8px);
-                    }
-                }
-                &:not(&:first-of-type):hover{
-                    color:#1296db;
-                }
-            }
+            position: relative;
         }
     }
     .WatchActivity_data{
@@ -65,7 +44,7 @@
         border-right: 1px solid #EBEEF5;
         border-bottom: 1px dashed #eaeaea;
         background-color: white;
-        height:200px;
+        height:220px;
         img{
             margin-top: 20px;
             width:180px;
@@ -79,12 +58,11 @@
             margin-top: 25px;
             .clearfloat();
             display: inline-block;
-            width: 75%;
+            width: 70%;
             .info_tips{
                 float: left;
                 width:70px;
                 span{
-                    font-weight: bold;
                     font-size:15px;
                     color: #606266;
                     height: 30px;
@@ -133,4 +111,59 @@
     float: left;
     width: 500px;
     height:450px;
+}
+.search_status{
+    span{
+        font-size: 18px;
+        margin-left: 20px;
+    }
+    font-size: 20px;
+    padding-left:40px;
+    float: left;
+    width: 60%;
+    height: 100%;
+    line-height: 50px;
+    select{
+        border: none;
+        outline: none;
+        width: 400px;
+        border-radius: 4px;
+    }
+}
+.Activity_search{
+    width: 30%;
+    float: left;
+    position: relative;
+    height: 80%;
+    line-height:50px;
+    text-align:right;
+    padding-right: 80px;
+    padding-top: 6px;
+    input{
+        float:right;
+        text-indent: 5px;
+        width: 400px;
+        height: 37px;
+        border: 0;
+        outline: none;
+        padding-right: 5px;
+        }
+    button{
+        margin-top: -1px;
+        float:right;
+        color: white;
+        background-color: #409eff;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        border: 1px solid #dcdfe6;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        transition: .1s;
+        font-weight: 500;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
 }

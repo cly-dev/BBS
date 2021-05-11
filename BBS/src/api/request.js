@@ -5,9 +5,9 @@ export default (url,data={},params={},method="get")=>{
         return new Promise((resolve,reject)=>{
             axios({
                 url:`${baseUrl}${url}`,
-                method:method,
-                data:data,
-                params:params
+                method,
+                data,
+                params
             }).then(res=>{
                 resolve(res)
             }).catch(err=>{

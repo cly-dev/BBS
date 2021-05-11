@@ -1,0 +1,41 @@
+@import "../commit.less";
+header,main{
+    .alikeBox();
+}
+header{
+    span{
+        &:last-of-type{
+            color: #909399;
+            font-size: 12px;
+
+        }
+    }
+}
+main{
+    .Trends_mainer{
+        padding-bottom: 10px;
+        text-indent: 5px;
+        border-bottom: 1px solid #EBEEF5;
+        .Trends_tips{
+            height: 30px;
+            span{
+                font-size:15px;
+                line-height: 30px;
+                color: #909399;
+                &:last-of-type{
+                float:right;
+                }
+            } 
+        }
+        article{
+            font-size: 25px;
+            font-weight: bold;
+        }
+    }
+}
+.Trends_null{
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+    color: #909399;
+}

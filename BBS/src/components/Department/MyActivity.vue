@@ -11,7 +11,7 @@
             </div>
             <div>
             <router-link to="/department/release-activity">
-                <span class="iconfont icon-chuangjianhuodong"></span>
+                <span class="iconfont icon-canjiagongzuoshijian"></span>
                 <br/>
                 <span>我发布的</span>
             </router-link>
@@ -24,7 +24,12 @@
 
 <script>
     export default {
-        
+        data(){
+            return{
+
+            }
+        },
+       
     }
 </script>
 

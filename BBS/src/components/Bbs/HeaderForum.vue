@@ -5,24 +5,25 @@
         <div class="nav_field">
           <ul>
             <li>
+              <div class="logo-content">
               <router-link to="/index">
-                logo+名字
+                 <img src="../../../static/images/logo.png" class="logo">
+                <span>1楼2楼</span>
               </router-link>
-            </li>
-            <li @click="To_hotlist()">
-              <a>
-                首页
-              </a>
+              </div>
             </li>
             <li>
-            <a href="javascript:0;" @click="To_follow()">
-                关注
-            </a>
+              <router-link to="/campus/hotlist">首页</router-link>
             </li>
             <li>
-            <a href="javascript:0;"  @click="To_square()">
+             <router-link to="/campus/follow">关注
+                
+           </router-link>
+            </li>
+            <li>
+             <router-link to="/campus/squre">
               广场
-            </a>
+            </router-link>
             </li>
             <li>
               <router-link to="/">
@@ -144,7 +145,7 @@
                     >
                     <div class="person_setting">
                       <ul>
-                        <li>我的主页</li>
+                        <router-link to="/people"> <li>我的主页</li></router-link>
                         <li>退出</li>
                       </ul>
                     </div>
@@ -194,6 +195,7 @@
   </div>
 </template>
 <script>
+import List from '../public/List.vue';
   let searchlist=[
           {title:"我是今日热词",number:2220,id:1111111},
           {title:"我是今日热词",number:2220,id:1111111},
@@ -225,6 +227,7 @@
     {type:"user",title:"系统通知",centent:"恭喜你",time:"2020-12-11 10:36:12"},
   ];
   export default{
+  components: { List },
     name:'headerForum',
     inject: ['reload'],
     data(){
@@ -390,7 +393,6 @@
       deletemsg(){
            this.loading=true;
            this.deletesuccess();
-           console.log(this.detaillist);
            this.msglist.splice(this.listindex,1);
            if(this.msglist.length==0){
              this.msg_null=true;
@@ -405,7 +407,6 @@
       getshow(){
          this.P.then(res=>{
             this.loading_show=false;
-           console.log(res);
            if(res==""){
                this.msg_null=true;
              }else{
@@ -418,7 +419,6 @@
          this.detail_show=true;
          this.detaillist=this.msglist[index];
          this.listindex=index;
-         console.log(this.detaillist);
       },
       //
       deletesuccess(){
@@ -431,7 +431,6 @@
       },
       doActive(index){
         let divs=document.querySelectorAll("[class^='centent_']");
-        console.log(divs);
         for(let i=0;i<divs.length;i++){
         divs[i].style.display="none";
         }
@@ -456,21 +455,12 @@
       }
 
     },
-    watch:{
-         // result:(newV,orderV)=>{
-         //   if(newV!=""){
-         //    this.search_result=true;
-         //   }
-         //   console.log(newV);
-         // }
-    },
     mounted(){
       let search_div=document.querySelector(".nav_result");
       let search_input=document.getElementsByName("navsearch");
       let msg_icon=document.querySelector(".el-icon-chat-dot-round");
       let msg_div=document.querySelector(".person_msg");
       let msg_centent=document.querySelector(".msg_cen");
-      console.log(msg_centent);
       search_input[0].addEventListener('click',function(event){
      　　 event=event||window.event;
      　　 search_div.style.display="block";

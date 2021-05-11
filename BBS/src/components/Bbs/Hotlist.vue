@@ -37,8 +37,7 @@
     },
     async created(){
     let result=await getHomepage();
-    this.data=result["data"].date;  
-    console.log(this.data);  
+    this.data=result["data"].result; 
     },
     computed:{
       stylecolor(){
@@ -77,15 +76,8 @@
             })
           }
     },
-    watch:{
-      index:(newV,orderV)=>{
-        console.log(newV);
-        console.log(orderV);
-    }
-  },
   }
 </script>
 <style lang="less" scoped>
   @import '../../../static/less/hoslist.less';
-  
 </style>

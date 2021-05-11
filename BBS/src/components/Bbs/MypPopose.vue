@@ -4,7 +4,7 @@
       <span>我创作的</span>
     </div>
     <!-- 主体 -->
-    <div class="CollectionArticle_mainer">
+    <div class="CollectionArticle_mainer" v-if="totalNum!=0">
       <!-- 数据 -->
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="文章名" width="180">
@@ -65,10 +65,13 @@
         :current-page.sync="currentPage1"
         :page-size="6"
         layout="total, prev, pager, next"
-        :total="tableData.length"
+        :total="totalNum"
       >
       </el-pagination>
       <!-- 当收藏为空时 -->
+    </div>
+    <div  class="MyPopose_null" v-else>
+      <span>空空如也</span>
     </div>
   </div>
 </template>
@@ -79,8 +82,12 @@ import {ShowAllArticleByPage,DeleteArticle} from "../../api/data";
 export default {
   data() {
     return {
+      //当前页码
       currentPage1: 1,
+      //存储数据
       tableData: [],
+      //总条数
+      totalNum:0,
     };
   },
   methods: {
@@ -93,40 +100,51 @@ export default {
     handleSeacher(index, row){
       localStorage.setItem("articleId",row.articleId);
       this.$router.push({
-        name:"articledetails"
+        name:"articledetails",params:{
+          articleId:row.articleId
+        }
       })
       eventBus.$emit("sentTitle",row);
     },
     //编辑
     handleEdit(index, row) {
-      console.log(index, row);
+      localStorage.setItem("articleId",row.articleId);
+      this.$router.push({
+        name:"Revuseacticle",
+        params:{
+          articleId:row.articleId
+        }
+      })
     },
     //删除
     async handleDelete(index, row) {
       let result=await DeleteArticle({articleId:row.articleId});
-      console.log(result);
       if(result["data"].code=="200"){
-         this.$message({
-            type:"success",
-            message:"删除成功",
-            offset:100
-          })
+        this.message("success","删除成功");
           this.tableData.splice(index,1);
+          this.totalNum--;
       }
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
     },
     async handleCurrentChange(val) {
-      let result =await ShowAllArticleByPage(`6cae95a3-6052-4bcd-b55f-4ef36312c7cd/${val}/6`)
-      this.tableData=result["data"].date;
+      let result =await ShowAllArticleByPage(`${this.$GetUserId()}/${val}/6`)
+      this.tableData=result["data"].result.data;
     },
    
   },
    async created() {
-     let result =await ShowAllArticleByPage(`6cae95a3-6052-4bcd-b55f-4ef36312c7cd/1/6`)
-      this.tableData=result["data"].date;
+     //请求我的创作的文章
+     let result =await ShowAllArticleByPage(`${this.$GetUserId()}/1/6`);
+     if (result) {
+        if(result["data"].result.allDataNum!=0){
+        this.totalNum=result["data"].result.allDataNum;
+        this.tableData=result["data"].result.data;
+      }
+     }
+   
     },
+    
 };
 </script>
 

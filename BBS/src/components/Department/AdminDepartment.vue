@@ -10,7 +10,6 @@
       <span @click="centerDialogVisible = true">查看部门人数</span>
       <span>发起部门活动</span>
       <span>查看近期活动</span>
-      
     </div>
 
     <!-- 修改部门信息 -->
@@ -73,9 +72,6 @@
   </span>
 </el-dialog>
 
-
-
-
     <!-- 部门人数 -->
     <el-dialog
       title="部门人数"
@@ -83,6 +79,7 @@
       width="40%"
       center
     >
+     
  <el-table
     :data="tableData"
     style="width: 100%">
@@ -113,6 +110,9 @@
           size="mini"
           @click="handleEdit(scope.$index, scope.row)" ></el-button>
           </el-tooltip>
+          <el-tooltip content="设置" placement="top" effect="light">
+          <el-button type="primary" icon="el-icon-edit" circle size="mini"  @click="handleChange(scope.$index, scope.row)"></el-button>
+          </el-tooltip>
           <el-tooltip content="移除" placement="top" effect="light">
         <el-button
         icon="el-icon-delete" 
@@ -125,6 +125,30 @@
       </template>
     </el-table-column>
   </el-table>
+  <!-- 内层弹出框 -->
+   <el-dialog
+      width="30%"
+      title="设置权限"
+      :visible.sync="innerVisible"
+      center
+      append-to-body>
+      <section class="change_container">
+        <span>部员阿勇:</span>
+        <select>
+          <option value="干事">干事</option>
+          <option value="老干事">老干事</option>
+          <option value="第一负责人">第一负责人</option>
+          <option value="第二负责人">第二负责人</option>
+        </select>
+        <p>注:设置干事为第一负责人或第二负责人默认换届</p>
+      </section>
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="innerVisible = false">取 消</el-button>
+        <el-button type="primary" @click="innerVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
       <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -151,7 +175,10 @@ export default {
   mixins:[upload],
   data() {
     return {
-        modifyDialogVisible:false,
+
+         innerVisible:false,
+
+         modifyDialogVisible:false,
           currentPage1: 5,
         //查看人数显示框
          centerDialogVisible: false,
@@ -219,8 +246,13 @@ export default {
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-
-         handleEdit(index, row) {
+      //
+      handleChange(index,row){
+        this.innerVisible=true;
+        console.log(row);
+      },
+      //查看部门人员事件
+      handleEdit(index, row) {
         console.log(index, row);
       },
       handleDelete(index, row) {
@@ -242,20 +274,7 @@ export default {
     //         next();          
     //   })
     //判断认证信息
-    this.$nextTick(() => {
-      if (this.$store.state.identity == "user") {
-        this.$message({
-          message: "还未认证,自动跳转到认证界面",
-          type: "warning",
-          offset: 100,
-        });
-        setTimeout(() => {
-          this.$router.push({
-            name: "部门/认证",
-          });
-        }, 2000);
-      }
-    });
+   
   },
 };
 </script>

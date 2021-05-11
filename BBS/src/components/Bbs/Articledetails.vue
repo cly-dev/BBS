@@ -8,54 +8,55 @@
             placement="top-start"
             width="300"
             trigger="hover"
+            @show="getUSerInfo(articleData)"
             >
             <!-- 个人信息 -->
             <div class="portrait_hover">
               <!-- 头像、姓名、签名 -->
               <div class="author_container">
-                <img src="../../assets/logo.png" alt="请检查网络">
+                <img :src="articleData.userImage" alt="请检查网络">
                 <div class="author_message">
-                  <span>阿勇</span>
-                  <span>岁月悠长</span>
+                  <span>{{articleData.userName}}</span>
+                  <!-- <span>岁月悠长</span> -->
                 </div>
               </div>
               <!-- 其他信息 -->
               <div class="author_otherinfo">
                   <ul>
                     <li>
-                        <span>回答</span>
-                        <span>1122</span>
+                        <span>专业</span>
+                        <span class="mojor">{{UserInfo.major}}</span>
                     </li>
                     <li>
-                        <span>文章</span>
-                        <span>1122</span>
+                        <span>性别</span>
+                        <span>{{UserInfo.sex}}</span>
                     </li>
                     <li>
                         <span>关注者</span>
-                        <span>4545</span>
+                        <span>{{UserInfo.fansSum}}</span>
                    </li>
-                  </ul>
+                </ul>
               </div>
               <div class="author_operation">
-                <el-button type="primary" icon="el-icon-plus">关注</el-button>
+                <el-button type="primary" icon="el-icon-plus" @click="handleCore">关注</el-button>
                 <el-button  icon="el-icon-s-promotion">访问</el-button>
               </div>
             </div>
 
             <div slot="reference">
-            <img src="../../assets/logo.png" class="portrait_img" />
+            <img :src="articleData.userImage" class="portrait_img" />
             </div>
           </el-popover>
       </div>
       <!-- 用户信息 -->
       <div class="author_information">
-        <span class="author_name">阿勇</span>
+        <span class="author_name">{{articleData.userName}}</span>
         <el-tooltip placement="top">
           <div slot="content">{{grade}}</div>
           <img src="../../../static/images/grade/用户_等级3.png" class="author_grade">
-        </el-tooltip>
-                   
-        <span class="push_time" style="transform: translate(0px,5px);">{{articleData.createTime}} 标签: <el-button size="mini" v-for="(value,key) in label" :key="key">{{value}}</el-button> </span>
+        </el-tooltip>   
+        <span class="push_time" style="transform: translate(0px,5px);">{{articleData.createTime}}</span>
+        <span class="article_label">标签: <el-button size="mini" v-for="(value,key) in label" :key="key">{{value}}</el-button></span>
       </div>
     </div>
     <!-- 主体 -->
@@ -80,7 +81,7 @@
       <!-- 操作 -->
       <div class="article_operation">
         <ul>
-          <li>浏览1000+</li>
+          <li>浏览{{ articleData.scanNum}}</li>
           <li @click="Scorllcomment()">{{  CommentFlay}}</li>
           <li>
             <!-- 分享 -->
@@ -96,20 +97,19 @@
               </el-dropdown-menu>
             </el-dropdown>
           </li>
-          <li>收藏</li>
+          <li @click="handleCollection(articleData.articleId)" class="collection">收藏</li>
           <!--作者浏览才会显示-->
-          <li>编辑</li>
+          <li v-if="articleData.hasSelf" @click="ToEditor">编辑</li>
           <li @click="dialogVisible = true">举报</li>
         </ul>
       </div>
-      <!-- <VueEmoji ref="emoji" @input="onInput"  /> -->
       <div class="article_comment">
 
         <!-- 输入框和发表 -->
         <div class="commment_number">
           <span>{{ CommentFlay}} </span>
         </div>
-
+        <!-- 评论框 -->
         <div class="comment_container" style="display:block">
           <div class="comment_input">
             <VueEmoji ref="emoji" @input="onInput" :value="content" />
@@ -133,43 +133,43 @@
                 width="300"
                 trigger="hover"
                 placement="bottom-start"
+                @show="getUSerInfo(item)"
                 >
             <!-- 个人信息 -->
             <div class="portrait_hover">
               <!-- 头像、姓名、签名 -->
               <div class="author_container">
-                <img src="../../assets/logo.png" alt="请检查网络">
+                <img :src="item.authorImage">
                 <div class="author_message">
-                  <span>阿勇</span>
-                  <span>岁月悠长</span>
+                  <span>{{item.authorName}}</span>
+                  <!-- <span>岁月悠长</span> -->
                 </div>
               </div>
               <!-- 其他信息 -->
               <div class="author_otherinfo">
                   <ul>
                     <li>
-                        <span>回答</span>
-                        <span>1122</span>
+                        <span>专业</span>
+                        <span class="mojor">{{UserInfo.major}}</span>
                     </li>
                     <li>
-                        <span>文章</span>
-                        <span>1122</span>
+                        <span>性别</span>
+                        <span>{{UserInfo.sex}}</span>
                     </li>
                     <li>
                         <span>关注者</span>
-                        <span>4545</span>
+                        <span>{{UserInfo.fansSum}}</span>
                    </li>
                   </ul>
               </div>
               <div class="author_operation">
-                <el-button type="primary" icon="el-icon-plus">关注</el-button>
+                <el-button type="primary" icon="el-icon-plus" @click="handleCore(item)">关注</el-button>
                 <el-button  icon="el-icon-s-promotion">访问</el-button>
               </div>
             </div>
-
-                <img src="../../../static/images/user.png" slot="reference"/>
+                <img :src="item.authorImage" slot="reference"/>
             </el-popover>
-            <span class="comment_name">{{item.name}}</span>
+            <span class="comment_name">{{item.authorName}}</span>
             <span class="comment_time">{{item.createTime}}</span>
           </div>
 
@@ -179,18 +179,17 @@
           </div>
           <!--评论操作-->
           <div class="comment_operation" @mouseover="Hovering(index)" @mouseout="Hoverout(index)">
-            <div class="comment_support" data-support="">
-              <img src="../../../static/images/campus/detail/article_beforesupport.png" @click="Clicksupport(item,index)">
-              <span>{{item.num}}</span>
+            <div class="comment_support" data-support="" >
+              <img :src="item.hasLike ?'../../../static/images/campus/detail/article_aftersupport.png': '../../../static/images/campus/detail/article_beforesupport.png'" @click="Clicksupport(item,index)">
+              <span style="white-space: nowrap;">{{item.likeNum}} </span>
             </div>
             <div class="operation_content" data-flay='true'>
               <ul>
                 <li @click="Replyclick(index)">回复</li>
                 <li @click="Stampclick(index)">{{stamp(item.stamp)}}</li>
                 <li @click="dialogVisible = true">举报</li>
-
                 <!--只对改条评论的评论者显示-->
-                <li>
+                <li v-if="item.hasSelf">
                   <el-popconfirm
                     title="要删除此条评论嘛"
                     @confirm="deleteComment(item,index)"
@@ -232,7 +231,7 @@
                       </div>
                     </div>
                     <!-- 其他信息 -->
-                    <div class="author_otherinfo">
+                    <!-- <div class="author_otherinfo">
                         <ul>
                           <li>
                               <span>回答</span>
@@ -247,7 +246,7 @@
                               <span>4545</span>
                          </li>
                         </ul>
-                    </div>
+                    </div> -->
                     <div class="author_operation">
                       <el-button type="primary" icon="el-icon-plus">关注</el-button>
                       <el-button  icon="el-icon-s-promotion">访问</el-button>
@@ -302,7 +301,7 @@
         </div>
         <div class="block" align="center">
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage1"
-            :page-size="10" layout="total, prev, pager, next" :total="this.commentData.length">
+            :page-size="10" layout="total, prev, pager, next" :total="total">
           </el-pagination>
         </div>
       </div>
@@ -344,7 +343,6 @@
         </el-checkbox-group>
         <textarea cols="30" rows="10" placeholder="请输入详细理由(选填)" class="report_input" v-model="reportContent"></textarea>
       </div>
-
       <!-- 按钮 -->
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -354,30 +352,26 @@
   </div>
 </template>
 <script>
-  import {ShowArticle,ShowLabel,ShowAllCommentByPage,CommentAnswerLike} from "../../api/data";
-	import eventBus from '../../eventBus.js';
+  import {ShowArticle,ShowAllCommentByPage} from "../../api/data";
   import minxins from "../../minxin/artDetail.js";
   import VueEmoji from 'emoji-vue';
   export default {
     mixins:[minxins],
     data: () => {
       return {
+        //用户信息
+        UserInfo:{},
+        //是否为作者标识
+        authorEnum:false,
+        //收藏标识
+        collection:true,
         //评论信息
-        commentData:[
-          {
-            name:"阿勇",content:"lalala",commentId:"7b719d38-74f7-4d36-a257-586af0f30bb8",createTime: "2021-03-04 18:21:58"
-          },{
-            name:"阿勇",content:"lalala",commentId:"7b719d38-74f7-4d36-a257-586af0f30bb8",createTime: "2021-03-04 18:21:58"
-          },  {
-            name:"阿勇",content:"lalala",commentId:"7b719d38-74f7-4d36-a257-586af0f30bb8",createTime: "2021-03-04 18:21:58"
-          }
-
-        ],
+        commentData:[],
         //标签数据
         label:[],
         data:{},
         // 页码
-        currentPage1: 5,
+        currentPage1:1,
         //模拟数据
        articleData:{},
         //点赞信息对象
@@ -425,6 +419,10 @@
         content: '',
         //回复评论内容
         replyCentent: '',
+        //评论总条数
+        total:0,
+        //文章id
+        articleId:''
       }
     },
     methods: {
@@ -441,6 +439,7 @@
           }
         }
       },
+      //判断踩
       stamp() {
         return data => {
           if (!data) {
@@ -450,52 +449,47 @@
           }
         }
       },
+      //判断评论
       CommentFlay(){
-        if(this.commentData.length>0){
-          return `${this.commentData.length}条评论`;
+        if(this.total>0){
+          return `${this.total}条评论`;
         }else{
           return `暂无评论`;
         }
-      }
-    },
-    watch: {
-      content: (newV, orderV) => {
-        console.log(newV);
       },
-      data: (newV, orderV) => {
-        console.log(newV);
-      }
     },
     components: {
       VueEmoji
     },
-     created() {
-        let id=localStorage.getItem("articleId");
-        // id=this.$route.params==="{}"? localStorage.getItem("articleId"):this.$route.params.id;
-        // console.log(l);
-        // console.log(id);
-        async function getArticle(){
-         let result=await ShowArticle(id);
-         return result;
-        }
-        async function getLabel(){
-         let result=await ShowLabel(id);
-         return result;
-        }
-        async function getComment(){
-        let result=await ShowAllCommentByPage(id);
-         return result;
-        }
-        let p1=getArticle();
-        let p2=getLabel();
-        let p3=getComment()
-        Promise.all([p1,p2,p3]).then(res=>{
-            this.articleData=res[0].data.date;
-            this.label=res[1].data.date;
-            // this.commentData=res[2].data.date;
+     async created() {
+       let id="";
+        if(!this.$route.params.articleId) {
+           id=localStorage.getItem("articleId");        
+         }else{
+           id=this.$route.params.articleId;
+         }
+         this.articleId=id;
+      //请求评论
+      let result=await ShowAllCommentByPage(`${id}`+'/1/10');
+      if (result) {
             $(".loading_container").css("display","none");
+            this.total=result["data"].result.allDataNum;
+           this.commentData=result["data"].result.data;
+      }
+       getArticle(id).then(res=>{
+           localStorage.setItem("article",JSON.stringify(res.data.result));
+            this.articleData=res.data.result;
+            this.label=res.data.result.label;
             
-        })
+            if (res.data.result.hascollection) {
+                 $(".collection").css("color","#F56C6C").text("已收藏");
+                this.collection=true;
+            }else{
+              $(".collection").css("color","#626262").text("收藏");
+              this.collection=false;
+
+            }
+       })
     },
     mounted() {
       this.$nextTick(() => {
@@ -505,6 +499,10 @@
       })
     }
   }
+ async function getArticle(id){
+         let result=await ShowArticle(id);
+         return result;
+        }
 </script>
 
 <style lang="less" scoped="scoped">

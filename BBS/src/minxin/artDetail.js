@@ -1,6 +1,34 @@
-import {CommentAnswerLike,CommentArticleInsert,DeletecommentArticle} from "../api/data";
+import { ShowUSerInfo,ShowAllCommentByPage,CollectionArticledelete,CommentArticleLike,CommentArticleInsert,DeletecommentArticle,CollectionArticles,FocusOther} from "../api/data";
 export default{
   methods:{
+    //查看某人主页
+    async getUSerInfo(item){
+      if(item.userId!=this.UserInfo.userId){
+        let result=await ShowUSerInfo(item.userId);
+        this.UserInfo=result["data"].result;
+      }
+      this.UserInfo.userId=item.userId;
+    },
+    //关注某人
+    async handleCore(val){
+      let result=await FocusOther({userId:val.userId});
+      if(result["data"].code=="200"){
+        this.message("success","关注成功");
+      }else{
+        this.message("warning","不能重复关注");
+      }
+    },
+
+    //跳转到修改文章
+    ToEditor(){
+      localStorage.setItem("articleId",this.articleId);
+      this.$router.push({
+        name:"Revuseacticle",
+        params:{
+          articleId: this.articleId
+        }
+      })
+    },
  //删除评论信息
       async deleteComment(value,index){
         let result=await DeletecommentArticle({commentId:value.commentId});
@@ -13,9 +41,7 @@ export default{
         }
         console.log(index);
         this.commentData.splice(index,1);
-
       },
-
       // 删除回复信息
       deleteReply(){
        this.$notify({
@@ -25,13 +51,36 @@ export default{
                    offset: 100
                });
       },
-
+      //收藏某篇文章
+     async handleCollection(val){
+        if(!this.collection){
+        let result=await CollectionArticles({
+          articleId:val
+        })
+        console.log(result);
+        if(result["data"].code=="200"){
+          this.message("success","收藏成功");
+          $(".collection").css("color","#F56C6C").text("已收藏");
+          this.collection=true;
+        }
+      }else{
+          let result=await CollectionArticledelete({articleId:val});
+          if(result["data"].code=="200"){
+            this.message("success","取消收藏");
+            $(".collection").css("color","#626262").text("收藏");
+            this.collection=false;
+          }
+      }
+      },
+  
       // 切换页码事件
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+      async handleCurrentChange(val) {
+        let result=await ShowAllCommentByPage(`${this.articleId}`+`/${val}`+"/10");
+        console.log(result);
+        this.commentData=result["data"].result.data;
       },
       //评论踩动作
       CommentStampclick(value){
@@ -61,9 +110,9 @@ export default{
           }else{
             value.support=true;
             this.supPort(value.support);
-            value.num++;
             value.stamp=false;
             this.stamp(value.stamp);
+            console.log("1111");
           }
       },
       //踩动作
@@ -85,30 +134,19 @@ export default{
       },
       //点赞动作
       async Clicksupport(value,index) {
-        let result=await CommentAnswerLike({commentId:value.commentId});
-        if(result["data".code=="200"]){
-          $(".comment_support img").attr("src","../../../static/images/campus/detail/article_aftersupport.png");
-          $(".comment_support span").text( $(".comment_support span").text()+1).css("color","#409EFF");
+        let result=await CommentArticleLike({commentId:value.commentId});
+        if(result["data"].code=="200"){
+        value.likeNum++;
+          $(".comment_support").eq(index).find("img").attr("src","../../../static/images/campus/detail/article_aftersupport.png");
+          $(".comment_support ").eq(index).find("span").css("color","#409EFF");
           this.$message({
                 message: '点赞成功',
                 type: 'success',
                 offset:100
               });
+        }else{
+          this.message("warning","已经点过赞了");
         }
-        // if (this.data[index].support) {
-        //   this.$message({
-        //     message: '只能点赞一次哦',
-        //     type: 'warning',
-        //     offset:100
-        //   });
-        // } else {
-        //   this.data[index].support = true;
-        //   this.supPort();
-        //   this.data[index].num++;
-        //   this.data[index].stamp = false;
-        //   this.stamp(this.data[index].stamp);
-        // }
-
       },
       //点击评论动作
       Scorllcomment() {
@@ -136,7 +174,6 @@ export default{
           $(".operation_content").eq(index).find("li").eq(0).text("取消回复");
           $(".operation_content").eq(index).get(0).setAttribute("data-flay","false");
           $(".comment_containers").eq(index).css("display","block");
-
         }else{
           $(".comment_containers").eq(index).css("display","none");
           $(".operation_content").eq(index).find("li").eq(0).text("回复");
@@ -186,7 +223,7 @@ export default{
           articleId:this.articleData.articleId,
           content:this.content
         })
-        console.log(result);
+        console.log(result["data"]);
           if(result["data"].code=="200"){
             this.$message({
               message:"发表成功",
@@ -196,21 +233,28 @@ export default{
             this.$nextTick(() => {
               this.content = "";
             })
+            this.total++;
             this.pushLoading=false;
             let date=new Date();
-            if(this. commentData.length<10){
+            if(this.commentData.length<10){
              this.commentData.unshift({
-                answerId:result["data"].date,
+               userId:this.$GetUserId(),
+                likeNum:0,
+                commentId:result["data"].result,
                 content:this.content,
                 createTime:`${new Date().getFullYear().toString()}-${new Date().getMonth().toString()}-${new Date().getDate().toString() } ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
-                name:"阿勇"
+                authorName:this.$store.state.user.userName,
+                authorImage:this.$store.state.user.selfImage
            })}else{
              this.commentData.pop();
              this.commentData.unshift({
-                answerId:result["data"].date,
+               userId:this.$GetUserId(),
+                likeNum:0,
+                commentId:result["data"].result,
                 content:this.content,
                 createTime:`${new Date().getFullYear().toString()}-${new Date().getMonth().toString()}-${new Date().getDate().toString() } ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
-                name:"阿勇"
+                authorName:this.$store.state.user.userName,
+                authorImage:this.$store.state.user.selfImage
            })
            }
           }
@@ -244,8 +288,6 @@ export default{
         }).catch((err)=>{
           console.log(err);
         })
-        // console.log($(".comment_input .emoji-wysiwyg-editor").eq(index+1).html());
-        // this.data[index].replyloading = true;
       }
   }
 }

@@ -5,15 +5,15 @@
       <span>我的足迹</span>
     </div>
     <!-- 主体 -->
-    <div class="Track_container" v-if="this.list!=''">
+    <div class="Track_container" v-if="total!=0">
       <span class="Track_tis">只显示最近3天浏览记录</span>
       <!-- 数据 -->
       <div class="Track_main" v-for="(value, key) in list" :key="key">
         <span>{{ key + 1 }}</span>
         <span></span>
-        <span>{{ value.time }}浏览了{{ value.data }}</span>
+        <span>{{ value.time }}浏览了{{ value.title }}</span>
         <el-tooltip content="删除" placement="top" effect="light">
-          <span class="el-icon-delete" @click="handleDelete(value.scanHistoryId,key)"></span>
+          <span class="el-icon-delete" @click="handleDelete(value,key)"></span>
         </el-tooltip>
       </div>
       <div class="Delete_btn">
@@ -25,9 +25,9 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage1"
-      :page-size="10"
+      :page-size="9"
       layout="total, prev, pager, next"
-      :total="1000">
+      :total="total">
     </el-pagination>
   </div>
     </div>
@@ -40,15 +40,19 @@ import {ShowAllLimitTimeByPage,DeleteHistory} from "../../api/data";
 export default {
   data() {
     return {
+      //当前页码
        currentPage1: 1,
-      list: [
-        {time:"2021",data:"kakak",scanHistoryId:"222"}
-      ],
+       //数据
+      list: [],
+      total:0
     };
   },
   methods:{
+    //删除足迹
   async handleDelete(id,key){
-    let result=await DeleteHistory({scanHistoryId:id});
+    let result=await DeleteHistory({scanHistoryId:id.articleId});
+    console.log(result);
+    console.log(id);
     if(result["data"].code=="200"){
       this.$message({
         type:"success",
@@ -56,8 +60,9 @@ export default {
         offset:"100"
       })
       this.list.splice(key,1);
+      this.total--;
     }
-    console.log(id)
+  
   },
 
   handleSizeChange(val){
@@ -65,12 +70,18 @@ export default {
       },
   async handleCurrentChange(val) {
         let result=await ShowAllLimitTimeByPage(val);
-         this.list=result["data"].date;
+        //  this.list=result["data"].result;
+          this.list=result["data"].result.data;
+          console.log(result);
+
       }
   },
   async created() {
     let result=await ShowAllLimitTimeByPage(1);
-    this.list=result["data"].date;
+    if(result["data"].result.allDataNum!=0){
+      this.total=result["data"].result.allDataNum;
+      this.list=result["data"].result.data;
+    }
   },
 };
 </script>

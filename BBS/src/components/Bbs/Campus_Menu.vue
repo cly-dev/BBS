@@ -27,28 +27,7 @@
     methods:{
         
     },
-    watch:{
-      index:(newV,orderV)=>{
-        console.log(newV);
-        console.log(orderV);
-    },
-    // activeName:(newV,orderV)=>{
-    //   console.log(newV);
-    //   console.log(orderV);
-    // }
-  },
   created(){
-    // this.$nextTick(()=>{
-    //   if(!localStorage.getItem("campusmenu") || localStorage.getItem("campusmenu")=="" ){
-    //     this.activeName='second';
-    //     console.log(111);
-    //   }else{
-    //       console.log(11);
-    //      this.activeName=localStorage.getItem("campusmenu");
-    //      localStorage.setItem("campusmenu","");
-    //   }
-    // })
-    console.log(this.$route.name);
     this.$nextTick(()=>{
       this.activeName=this.$route.name;
     })
@@ -57,23 +36,6 @@
       $(".menu_nav li").on("click",(e)=>{
         $(".menu_nav li").css("color","");
         e.target.style.color="#409EFF";
-        // if(e.target.innerText === "广场"){
-        //   console.log(3);
-        //    this.$router.push({
-        //           name:'square'
-        //         })
-        // }else if(e.target.innerText === "热榜"){
-        //   console.log(2);
-
-        //   this.$router.push({
-        //         name:'hoslist'
-        //       })
-        // }else{
-        //   console.log(1);
-        //    this.$router.push({
-        //         name:"follow"
-        //       })
-        // }
     })
   }
   }

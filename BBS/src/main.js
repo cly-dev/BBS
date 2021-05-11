@@ -1,5 +1,3 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App'
 import router from './router';
@@ -17,21 +15,20 @@ import animated from '../static/css/animate.css' ;
 import "../static/css/iconfont.css";
 import 'jquery';
 import "./api/router";
-import VueParticles from 'vue-particles'  
+import User from "./plugin/user";
+import Message from "./plugin/message";
+import VueParticles from 'vue-particles'
+import SlideVerify from 'vue-monoplasty-slide-verify';
+import {host} from "../src/config/host";
+Vue.use(User);
+Vue.use(SlideVerify);
 Vue.use(VueParticles)  
-Vue.config.productionTip = false
-Vue.prototype.$axios=axios;
-Vue.prototype.message=((type,msg)=>{
-  ElementUI.Message({
-    type:type,
-    message:msg,
-    offset:100
-  })
-})
-// axios.defaults.baseURL='http://www.tuling123.com/openapi/'
+Vue.use(Message);
 Vue.use(less);
 Vue.use(ElementUI);
 Vue.use(animated);
+Vue.config.productionTip = false
+Vue.prototype.$axios=axios;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -41,7 +38,14 @@ new Vue({
   components:{ App },
   template: '<App/>'
 })
+//用户刷新之前保留信息和权限
+window.addEventListener("beforeunload",()=>{
+  if(JSON.stringify(store.state.user)!="{}" || store.state.user!=null ){
+      sessionStorage.setItem("user",JSON.stringify(store.state.user));
+      sessionStorage.setItem("position",store.state.identity);
+  }
+});
+axios.defaults.baseURL=host.BaseUrl;
 
-axios.defaults.baseURL="http://localhost:9090"
 
  

@@ -4,7 +4,7 @@
       <span @click="goBack">返回</span>
       <span>我发布的活动</span>
     </div>
-    <div class="RLcontainer_mainer">
+    <div class="RLcontainer_mainer" v-if="tableData==''">
       <el-table
         :data="
           tableData.filter(
@@ -76,7 +76,7 @@
         >
         </el-table-column>
         <el-table-column align="right">
-          <template slot="header" slot-scope="scope">
+          <template slot="header">
             <el-input
               v-model="search"
               size="medium"
@@ -84,9 +84,12 @@
             />
           </template>
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >查看详情</el-button
+            <el-tooltip class="item" effect="dark" content="查看详情" placement="top-start">
+            <el-button circle size="mini" icon="el-icon-search" @click="handleEdit(scope.$index, scope.row)"
+              ></el-button
             >
+            </el-tooltip>
+
             <el-tooltip class="item" effect="dark" content="编辑活动" placement="top-start">
                 <el-button type="primary" icon="el-icon-edit" circle size="mini"></el-button>
             </el-tooltip>
@@ -111,7 +114,7 @@
       >
       </el-pagination>
     </div>
-    <div class="null_container">
+    <div class="null_container" v-else>
         <img src="../../../static/images/department/null_icon.png" alt="">
         <span>您还未发布任何活动呢
           <router-link to="/department/createactivity">点击发起</router-link>
@@ -121,66 +124,12 @@
 </template>
 
 <script>
+import {GetReleaseActivityById,DeleteActivity} from '../../api/data';
 export default {
   data() {
     return {
       flag:false,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "已取消",
-        },
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-          tag: "进行中",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-          tag: "已结束",
-        },
-      ],
+      tableData: [],
       search: "",
       currentPage1: 5,
     };
@@ -194,8 +143,12 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
     },
-    handleDelete(index, row) {
-      console.log(index, row);
+    async handleDelete(index, row) {
+      let result=await DeleteActivity({activityId:row.activityId})
+      if(result["data"].code=="200"){
+        this.message("success","删除成功");
+        this.tableData.splice(index,1);
+      }
     },
     filterTag(value, row) {
       return row.tag === value;
@@ -204,8 +157,10 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+   async handleCurrentChange(val) {
+      let result=await GetReleaseActivityById({
+      pageNum:val
+    })
     },
   },
   computed: {
@@ -221,6 +176,15 @@ export default {
       };
     },
   },
+  async created(){
+    let result=await GetReleaseActivityById({
+      pageNum:1
+    })
+    if(result["data"].code!="500"){
+    this.tableData=result["data"].result;
+      
+    }
+  }
 };
 </script>
 
