@@ -5,7 +5,8 @@ import TitleHeader from "./TitleHeader";
         data(){
             return{
                 //文章信息
-                ArticleData:[]
+                ArticleData:[],
+                title:''
             }
         },
         methods: {
@@ -19,8 +20,17 @@ import TitleHeader from "./TitleHeader";
             }
         },
         created(){
-            console.log(this.$GetUserId());
-            ShowAllArticle(`${this.$GetUserId()}/1/10`).then(res=>{
+            let userId;
+            if (this.$route.path=="/people/index/article") {
+                this.title="我的文章";
+
+                 userId=this.$GetUserId();
+            }else{
+                this.title="ta的文章";
+
+                userId=this.$route.params.userId?this.$route.params.userId:localStorage.getItem("userId");
+            }
+            ShowAllArticle(userId).then(res=>{
               this.ArticleData=res["data"].result.data;
             })
         },
@@ -32,7 +42,7 @@ import TitleHeader from "./TitleHeader";
             return(
                 <section>
                     <header>
-                        <TitleHeader title="我的文章">
+                        <TitleHeader title={this.title}>
                             <span slot="right">显示最近10篇文章</span>
                         </TitleHeader>
                     </header>
@@ -60,9 +70,9 @@ import TitleHeader from "./TitleHeader";
                         <section class="article_null" v-show={this.ArticleData.length==0}>
                             <span>
                                 暂无文章
-                                <router-link to="/campus/article">去创作</router-link>
                             </span>
                         </section>
+
                     </main>
                 </section>
             )
@@ -70,7 +80,7 @@ import TitleHeader from "./TitleHeader";
     }
     //获取所有提问
  async function ShowAllArticle(userId){
-     let result=await ShowAllArticleByPage(userId);
+     let result=await ShowAllArticleByPage(`${userId}/1/10`);
      return result;
  }
 </script>

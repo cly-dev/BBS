@@ -21,7 +21,7 @@
            </router-link>
             </li>
             <li>
-             <router-link to="/campus/squre">
+             <router-link to="/campus/square">
               广场
             </router-link>
             </li>

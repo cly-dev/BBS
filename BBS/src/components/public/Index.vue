@@ -118,7 +118,7 @@
               </div>
               <div class="person">
                 <img
-                  :src="loginstatus?'../../../static/images/user.png':user.selfImage"
+                  :src="!user.selfImage?'../../../static/images/user.png':user.selfImage"
                   alt="请检查网络"
                   class="person_photo"
                 />
@@ -453,6 +453,7 @@ export default {
     if(this.$store.state.user){
       this.user=this.$store.state.user;
     }
+    console.log(this.user);
     if (!this.loginstatus) {
     $(".person_photo").attr("src",this.user.selfImage);
     }

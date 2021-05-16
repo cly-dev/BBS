@@ -4,7 +4,8 @@ import {ShowAllQuestionByPage} from '../../api/data';
     export default {
         data(){
             return{
-                QuestionData:[]
+                QuestionData:[],
+                title:""
             }
         },
         methods:{
@@ -26,7 +27,7 @@ import {ShowAllQuestionByPage} from '../../api/data';
             return(
                 <section>
                     <header>
-                        <TitleHeader title="我的问题">
+                        <TitleHeader title={this.title}>
                             <span slot="right">只显示最近的10条问题</span>
                         </TitleHeader>
                     </header>
@@ -49,14 +50,22 @@ import {ShowAllQuestionByPage} from '../../api/data';
                                             
                         </section>
                         <section class="question_null" v-show={this.QuestionData.length==0}>
-                            <span>暂无提问 <router-link to="/campus/questions">去提问</router-link></span>
+                            <span>暂无提问</span>
                         </section>
                     </main>
                 </section>
             )
         },
         created(){
-            ShowAllQuestion(this.$GetUserId()).then(res=>{
+            let userId;
+            if (this.$route.path=="/people/index/question") {
+                this.title="我的提问";
+                 userId=this.$GetUserId();
+            }else{
+                this.title="ta的提问";
+                userId=this.$route.params.userId?this.$route.params.userId:localStorage.getItem("userId");
+            }
+            ShowAllQuestion(userId).then(res=>{
                this.QuestionData=res["data"].result.data;
             })
         }

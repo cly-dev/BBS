@@ -1,0 +1,196 @@
+@import "../commit.less";
+header{
+    height:50px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 99;
+    background-color: white;
+}
+main{
+    width: 1300px;
+    margin: 60px auto;
+    border-radius: 10px;
+    .person_container{
+        border-radius: 10px;
+        height: 260px;
+        position: relative;
+        background-color:rgba(0, 0,0,0.3);
+        .person_img{
+            left: 25px;
+            position: absolute;
+            width: 190px;
+            height:200px;
+            border: 2px solid #EBEEF5;
+            top: 50%;
+            margin-top:-100px;
+            object-fit: cover;
+            z-index: 98;
+            border-radius: 5px;
+
+        }
+        .info_user{
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            // width: 100%;
+            height: 130px;
+            .info_container{
+                background-color: white;
+                height:100%;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 0 2px #909399;
+            .info_data{
+                margin-left:220px;
+                height: 120px;
+                padding:6px;
+                span{
+                    display: block;
+                }
+                .info_nickName{
+                    height: 32px;
+                    font-size:22px;
+                }
+                .info_autograph{
+                    height: 32px;
+                    line-height:32px;
+                    color: #606266;
+                }
+                a{
+                    
+                    display: display-block;
+                    color: #909399;
+                    &:hover{
+                        color: #409EFF;
+                    }
+                    &::after{
+                        margin-left: 10px;
+                        content: '';
+                        .triangleborder(7px,#606266);
+                         transform:rotate(45deg) translate(-5px);
+                    }
+                }
+            
+            }
+            .info_detail{
+                width:100%;
+                height: 300px;
+                .detail_item{
+                    text-align: center;
+                    line-height: 50px;
+                    height: 50px;
+                    width: 50%;
+                    float: left;
+                    margin:10px 0;
+                     span{
+                        display:inline-block;
+                        border: 1px solid;
+                        line-height: 40px;
+                        box-sizing:border-box;
+                        border: 1px solid #E4E7ED;
+
+                    }
+                    .iconfont{
+                        height: 40px;
+                        width: 40px;
+                        font-size: 20px;
+                        color: #EBEEF5;
+                    }
+                    .item_value{
+                        width: 400px;
+                        height: 39px;
+                        color: #606266;
+                    }
+                } 
+                .info_sildeUp{
+                    display: block;
+                    font-size: 14px;
+                    cursor: pointer;
+                    width: 100%;
+                    text-align: center;
+                    color: #909399;
+                    &::after{
+                        margin-left: 10px;
+                        content: '';
+                        .triangleborder(6px,#909399);
+                         transform:translate(-5px) rotate(-140deg) ;
+                    }
+                }               
+            }
+        
+        }
+        }
+    }
+  }
+
+.moreInfo_container{
+    margin-top: 20px;
+    background-color: white;
+    .moreInfo_header{
+        cursor: pointer;
+        border-bottom: 1px solid #DCDFE6; 
+        ul{
+            .clearfloat();
+        }
+        li{
+            font-weight: 100;
+            margin-left: 20px;
+            font-size:18px;
+            text-align: center;
+            min-width: 55px;
+            line-height: 50px;
+            height:50px;
+            float: left;
+            span{
+                font-weight: 100;
+                padding-left: 5px;
+                font-size:16px;
+                color: #909399;
+                pointer-events: none;
+            }
+           
+        }
+        .activer{
+            font-weight:bold;
+            border-bottom:2px solid #409EFF;
+        }
+    }
+}
+
+  .icon-yonghu{
+    background-color: #409EFF;
+
+}
+.icon-shenfenzhenghaoma{
+    font-size: 25px;
+    background-color: #E6A23C;
+} 
+.icon-icon-mail{
+    background-color: #F56C6C;
+}  
+.icon-canjiagongzuoshijian{
+    font-size: 24px;
+    background-color: #409EFF;
+}
+.icon-shengrix{
+    font-size: 22px;
+    background-color: #F56C6C;
+}
+.icon-zhuanye{
+    background-color: #67C23A;
+}
+.icon-xingbie{
+    background-color: #67C23A;
+}
+.icon-guanzhu{
+    background-color: #67C23A;
+}
+.icon-fensipa{
+    background-color: #67C23A;
+
+}
+.activer{
+    font-weight:bold;
+    border-bottom:2px solid #409EFF;
+}

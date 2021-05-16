@@ -1,22 +1,42 @@
 import { ShowUSerInfo,ShowAllCommentByPage,CollectionArticledelete,CommentArticleLike,CommentArticleInsert,DeletecommentArticle,CollectionArticles,FocusOther} from "../api/data";
 export default{
   methods:{
+    //跳转到某人主页
+    handleVisit(val){
+      if (val==this.$GetUserId()) {
+        this.$router.push({
+           name:'my' 
+        })
+    }else{
+      localStorage.setItem("userId",val);
+      this.$router.push({
+        name:'peopleInfo',
+        params:{
+          userId:val
+        }
+      })
+    }
+    },
+
     //查看某人主页
     async getUSerInfo(item){
       if(item.userId!=this.UserInfo.userId){
         let result=await ShowUSerInfo(item.userId);
         this.UserInfo=result["data"].result;
+      
       }
       this.UserInfo.userId=item.userId;
     },
     //关注某人
     async handleCore(val){
+      console.log(val);
       let result=await FocusOther({userId:val.userId});
       if(result["data"].code=="200"){
         this.message("success","关注成功");
-      }else{
+      }else if(result["data"].code=="500"){
         this.message("warning","不能重复关注");
       }
+      console.log(result);
     },
 
     //跳转到修改文章
@@ -38,8 +58,8 @@ export default{
             type: 'success',
             offset: 100
           });
+          this.total--;
         }
-        console.log(index);
         this.commentData.splice(index,1);
       },
       // 删除回复信息
@@ -206,8 +226,16 @@ export default{
       //获取输入框内容
       onInput(event) {
         //事件。数据包含文本区域的值
-        //将输入的话和表情赋给newss
-        this.content = event.data;
+        this.comment_content=event.data;
+        console.log();
+        let str=$(".emoji-wysiwyg-editor").html().slice($(".emoji-wysiwyg-editor").html().indexOf("alt=")+5);
+        let arr=str.split(":");
+        let reg_str=`<img src="data:image/gif;base64,R0lGODlhAQABAJH/AP///wAAAMDAwAAAACH5BAEAAAIALAAAAAABAAEAAAICVAEAOw==" class="img" style="display:inline-block;width:25px;height:25px;background:url('/static/img/emoji_spritesheet_0.cce267d.png')-125px-75px no-repeat;background-size:675px 175px;" alt=":${arr[1]}:">`;
+        let reg=new RegExp(reg_str,"gi");
+        console.log(reg);
+        this.content=$(".emoji-wysiwyg-editor").html().replace(reg,arr[1]);
+        console.log(this.content);
+        
       },
       // 获取回复评论内容
       Reply(event) {
@@ -218,6 +246,7 @@ export default{
       },
       //发表评论动作
      async Pushing() {
+       if(this.content!=""){
         this.pushLoading = true;
         let result=await CommentArticleInsert({
           articleId:this.articleData.articleId,
@@ -232,6 +261,7 @@ export default{
             })
             this.$nextTick(() => {
               this.content = "";
+              this.comment_content="";
             })
             this.total++;
             this.pushLoading=false;
@@ -257,7 +287,13 @@ export default{
                 authorImage:this.$store.state.user.selfImage
            })
            }
+          }else{
+            this.message('warning',"发表失败");
+            this.pushLoading=false;
           }
+        }else{
+          this.message("warning","评论内容不能为空");
+        }
       },
       //回复他们评论
       commentReplying(index){

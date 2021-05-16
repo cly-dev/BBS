@@ -11,15 +11,12 @@
       <el-table :data="tableData" style="width: 100%">
         <el-table-column align="center" label="文章名" width="180">
           <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.date }}</span>
+            <span style="margin-left: 10px">{{ scope.row.title }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="作者" width="180">
           <template slot-scope="scope">
-            <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.name }}</el-tag>
-            </div>
+          {{ scope.row.authorName }}
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -107,17 +104,18 @@ export default {
 
     },
    async handleCurrentChange(val) {
-      let result=await CollectionArticle(`${this.$GetUserId()}/${val}`);
+      let result=await CollectionArticle(`${this.$GetUserId()}/${val}/6`);
       this.tableData=result["data"].result.data;
     },
   },
   async created(){
-      let result=await CollectionArticle(`${this.$GetUserId()}/1`);
+      let result=await CollectionArticle(`${this.$GetUserId()}/1/6`);
       if (result) {
          if (result["data"].result.allDataNum!=0) {
           this.total=result["data"].result.allDataNum;
           this.tableData=result["data"].result.data;
      }
+     console.log(result);
       }
     
      

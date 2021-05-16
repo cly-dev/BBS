@@ -26,7 +26,7 @@
           <!-- 输入框搜索 -->
           <div class="Activity_search">
             <button type="button" @click="handleSearch" >搜索</button>
-            <input type="search" v-model="result" placeholder="活动主题/活动地点" @keyup.enter="handleSearch">
+            <input type="search" v-model.trim="content" placeholder="活动主题/活动地点" @keyup.enter="handleSearch">
           </div>
 
         </div>
@@ -78,7 +78,7 @@ export default {
       //搜索类型
       searchType:0,
       //输入框内容
-      result:'',
+      content:'',
       //总条数
       totalnum:0,
       //页码
@@ -97,8 +97,8 @@ export default {
     },
     //按照活动状态搜索
     async getActivityByStatus(){
+     
       let result=await GetActivityList({activityStatus:this.status,pageNum:1});
-        console.log(result);
         if (result["data"].code=="200") {
           this.data=result["data"].result.data;
           this.totalnum=result["data"].result.total;
@@ -111,7 +111,9 @@ export default {
     },
     //搜索活动
     async handleSearch(){
-      let result=await GetActivityList({activityTitle:this.result,pageNum:1});
+       if (this.content!="") {
+        
+      let result=await GetActivityList({activityTitle:this.content,pageNum:1});
       if (result["data"].code=="200") {
         this.data=result["data"].result.data;
         this.totalnum=result["data"].result.total;
@@ -119,7 +121,7 @@ export default {
         this.currentPage1=1;
       this.message("success",`共找到${this.totalnum}条记录`)
       }else if(result["data"].code=="500"){
-        let res=await GetActivityList({activityPlace:this.result,pageNum:1});
+        let res=await GetActivityList({activityPlace:this.content,pageNum:1});
          if (res["data"].code=="200") {
             this.currentPage1=1;
              this.data=res["data"].result.data;
@@ -127,8 +129,11 @@ export default {
             this.searchType=2;
             this.message("success",`共找到${this.totalnum}条记录`)
         }else if(res["data"].code=="500"){
-        this.message("warning",`暂无关于 ${this.result} 搜索结果,请检查关键词`);
+        this.message("warning",`暂无关于 ${this.content} 搜索结果,请检查关键词`);
         }
+      }
+      }else{
+        this.message("warning","输入框不能为空");
       }
     },
     handleSizeChange(val) {

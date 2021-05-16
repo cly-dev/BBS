@@ -56,13 +56,13 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     }
   },
   plugins: [
-       new TerserPlugin({
-      terserOptions: {
-        compress: {
-          pure_funcs: ["console.log"]
-        }
-      }
-    }),
+    //    new TerserPlugin({
+    //   terserOptions: {
+    //     compress: {
+    //       pure_funcs: ["console.log"]
+    //     }
+    //   }
+    // }),
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env')
     }),

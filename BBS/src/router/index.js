@@ -70,7 +70,7 @@ export default new Router({
           component:()=>import("../components/public/MyFans.vue"),
         },{
           path:"/people/index/collection",
-          component:()=>import("../components/public/MyCore.vue"),
+          component:()=>import("../components/public/MyCollection.vue"),
         },{
           path:"/people/index/release",
           component:()=>import("../components/public/MyRelease.vue")
@@ -78,6 +78,35 @@ export default new Router({
       ]
       }
     ]
+    },
+    //别人的主页
+    {
+      path:"/people/info",
+      name:"peopleInfo",
+      component:()=>import("../components/public/OtherPeople.vue"),
+      redirect:{
+        path:"/people/other/trends"
+      },
+      children:[
+        {
+          path:"/people/other/trends",
+          name:"trends",
+          component:()=>import("../components/public/Trends.vue")
+        },
+        {
+          path:"/people/other/article",
+          component:()=>import("../components/public/MyArticle.vue")
+        },{
+          path:"/people/other/question",
+          component:()=>import("../components/public/MyQuestion.vue"),
+        },{
+          path:"/people/other/collection",
+          component:()=>import("../components/public/MyCollection.vue"),
+        },{
+          path:"/people/other/release",
+          component:()=>import("../components/public/MyRelease.vue")
+        }
+      ]
     },
     //论坛
     {

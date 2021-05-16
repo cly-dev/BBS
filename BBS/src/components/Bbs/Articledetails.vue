@@ -14,9 +14,9 @@
             <div class="portrait_hover">
               <!-- 头像、姓名、签名 -->
               <div class="author_container">
-                <img :src="articleData.userImage" alt="请检查网络">
+                <img :src="UserInfo.userImage?UserInfo.userImage:'../../../static/images/user.png' " alt="请检查网络">
                 <div class="author_message">
-                  <span>{{articleData.userName}}</span>
+                  <span>{{UserInfo.userName}}</span>
                   <!-- <span>岁月悠长</span> -->
                 </div>
               </div>
@@ -28,23 +28,23 @@
                         <span class="mojor">{{UserInfo.major}}</span>
                     </li>
                     <li>
-                        <span>性别</span>
-                        <span>{{UserInfo.sex}}</span>
+                        <span>粉丝</span>
+                        <span>{{UserInfo.fansSum}}</span>
                     </li>
                     <li>
-                        <span>关注者</span>
-                        <span>{{UserInfo.fansSum}}</span>
+                        <span>关注</span>
+                        <span>{{UserInfo.idolSum}}</span>
                    </li>
                 </ul>
               </div>
               <div class="author_operation">
-                <el-button type="primary" icon="el-icon-plus" @click="handleCore">关注</el-button>
-                <el-button  icon="el-icon-s-promotion">访问</el-button>
+                <el-button type="primary" icon="el-icon-plus" @click="handleCore(articleData)">关注</el-button>
+                <el-button  icon="el-icon-s-promotion" @click="handleVisit(UserInfo.userId)">访问</el-button>
               </div>
             </div>
 
             <div slot="reference">
-            <img :src="articleData.userImage" class="portrait_img" />
+            <img :src="articleData.userImage?articleData.userImage:'../../../static/images/user.png'" class="portrait_img" />
             </div>
           </el-popover>
       </div>
@@ -112,7 +112,7 @@
         <!-- 评论框 -->
         <div class="comment_container" style="display:block">
           <div class="comment_input">
-            <VueEmoji ref="emoji" @input="onInput" :value="content" />
+            <VueEmoji ref="emoji" @input="onInput" :value="comment_content" />
           </div>
           <div class="comment_push">
             <el-button type="primary" size="medium" :loading="pushLoading" @click="Pushing()">发表</el-button>
@@ -148,23 +148,23 @@
               <!-- 其他信息 -->
               <div class="author_otherinfo">
                   <ul>
-                    <li>
+                   <li>
                         <span>专业</span>
                         <span class="mojor">{{UserInfo.major}}</span>
                     </li>
                     <li>
-                        <span>性别</span>
-                        <span>{{UserInfo.sex}}</span>
+                        <span>粉丝</span>
+                        <span>{{UserInfo.fansSum}}</span>
                     </li>
                     <li>
-                        <span>关注者</span>
-                        <span>{{UserInfo.fansSum}}</span>
+                        <span>关注</span>
+                        <span>{{UserInfo.idolSum}}</span>
                    </li>
                   </ul>
               </div>
               <div class="author_operation">
                 <el-button type="primary" icon="el-icon-plus" @click="handleCore(item)">关注</el-button>
-                <el-button  icon="el-icon-s-promotion">访问</el-button>
+                <el-button  icon="el-icon-s-promotion" @click="handleVisit(UserInfo.userId)">访问</el-button>
               </div>
             </div>
                 <img :src="item.authorImage" slot="reference"/>
@@ -359,6 +359,8 @@
     mixins:[minxins],
     data: () => {
       return {
+        //评论信息
+        comment_content:'',
         //用户信息
         UserInfo:{},
         //是否为作者标识
@@ -480,7 +482,7 @@
            localStorage.setItem("article",JSON.stringify(res.data.result));
             this.articleData=res.data.result;
             this.label=res.data.result.label;
-            
+            console.log(res);
             if (res.data.result.hascollection) {
                  $(".collection").css("color","#F56C6C").text("已收藏");
                 this.collection=true;
@@ -497,6 +499,12 @@
         this.componentInstance = $(".article_comment").offset().top;
         $(document).scrollTop(0);
       })
+    },
+    watch:{
+      content:(newV,orderV)=>{
+        console.log(newV);
+        console.log(orderV);
+      }
     }
   }
  async function getArticle(id){

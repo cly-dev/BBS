@@ -1,22 +1,18 @@
 <template>
   <div>
-  <div class="square" v-for="(value,index) in list" :key="index">
-      <router-link :to="{name:'questdetail',parmas:{id:value.id}}">
+  <div class="square" v-for="(value,index) in list" :key="index" @click="toQuestDetail(value)">
           <div class="square_title">
            {{value.title}}
           </div>
-       </router-link>
           <div class="square_container">
              <router-link :to="{name:'articledetails',parmas:{id:value.id}}">
-            <img :src="value.imgPath" alt="" v-if="value.imgPath!=''">
+            <img :src="value.articleImage"  v-if="value.articleImage">
             </router-link>
-            <div class="square_content" :style="imgFlag(value.imgPath)">
-              <router-link :to="{name:'articledetails',parmas:{id:value.id}}">
+            <div class="square_content" :style="imgFlag(value.articleImage)">
                 <span>
                   {{value.content}}
                 </span>
                 <button type="button" class="more_btn">阅读全文</button>
-                </router-link>
                 <el-dropdown
                 placement="bottom"
                 >
@@ -61,7 +57,7 @@
   </div>
 </template>
 <script>
-
+import {ShowRandomArticle} from "../../api/data";
   export default{
     data:()=>{
       return {
@@ -69,17 +65,22 @@
           dialogVisible: false,
           checkList:[],
           imgPath:"../../static/images/department_propaganda.jpg",
-          list:[
-              {id:15551,title:'郑爽回应，网友看不懂：爽言爽语背后，是对道德的蔑视和满满心机',content:'郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友崩溃了、吃瓜群众太累了、路人三观稀碎了，两位叫兽直呼你妹了 郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽',imgPath:'../../../static/images/department_propaganda.jpg'},
-              {id:15551,title:'郑爽回应，网友看不懂：爽言爽语背后，是对道德的蔑视和满满心机',content:'郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友崩溃了、吃瓜群众太累了、路人三观稀碎了，两位叫兽直呼你妹了 郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽',imgPath:''},
-             {id:15551,title:'郑爽回应，网友看不懂：爽言爽语背后，是对道德的蔑视和满满心机',content:'郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友崩溃了、吃瓜群众太累了、路人三观稀碎了，两位叫兽直呼你妹了 郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽',imgPath:'../../../static/images/department_propaganda.jpg'},
-             {id:15551,title:'郑爽回应，网友看不懂：爽言爽语背后，是对道德的蔑视和满满心机',content:'郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友崩溃了、吃瓜群众太累了、路人三观稀碎了，两位叫兽直呼你妹了 郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽',imgPath:''},
-             {id:15551,title:'郑爽回应，网友看不懂：爽言爽语背后，是对道德的蔑视和满满心机',content:'郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友崩溃了、吃瓜群众太累了、路人三观稀碎了，两位叫兽直呼你妹了 郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽',imgPath:'../../../static/images/department_propaganda.jpg'},
-             {id:15551,title:'郑爽回应，网友看不懂：爽言爽语背后，是对道德的蔑视和满满心机',content:'郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友崩溃了、吃瓜群众太累了、路人三观稀碎了，两位叫兽直呼你妹了 郑爽终于回应了，看了她写的回应声明，语文老师流泪了、阅读理解不会了、文科博士学废了、郑爽粉丝陶醉了、广大网友郑爽',imgPath:'../../../static/images/department_propaganda.jpg'}
-          ]
+          list:[]
       }
     },
     methods:{
+        //跳转到问题详情事件
+        toQuestDetail(value){
+          localStorage.setItem("articleId",value.articleId);
+          this.$router.push({
+            name:'articledetails',
+            params:{
+              articleId:value.articleId
+            }
+          });
+        
+        },
+        //不感兴趣
          Uninterested(index){
              this.$nextTick(()=>{
                   this.list.splice(index,1);
@@ -90,18 +91,22 @@
     computed:{
       imgFlag(){
         return doc=>{
-          if(doc!=""){
+          if(doc){
             return {"width":"68%"};
           }else{
-             return {"width":"100%"};
+             return {"width":"96%"};
           }
         }
       }
     },
-    created(){
+   async created(){
+      let result=await ShowRandomArticle();
+      console.log(result);
+      result?this.list=result["data"].result:'';
 
     }
   }
+
 </script>
 
 <style lang="less" scoped="scoped">

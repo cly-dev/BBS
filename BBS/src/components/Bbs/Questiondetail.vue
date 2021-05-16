@@ -110,7 +110,7 @@
               </div>
               <div class="author_operation">
                 <el-button type="primary" icon="el-icon-plus" @click="handleCore(value)">关注</el-button>
-                <el-button  icon="el-icon-s-promotion">访问</el-button>
+                <el-button  icon="el-icon-s-promotion" @click="handleVisit(value.userId)">访问</el-button>
               </div>
             </div>
             <span slot="reference">
@@ -132,6 +132,7 @@
                 赞同
               </li>
               <li @click="handAnswerStamp(value, key)">踩</li>
+              <li @click="handCollectionAnwer(value)" :style="{'color':value.hasCollection?'#F56C6C':''}">{{value.hasCollection?'取消收藏':'收藏'}}</li>
               <li @click="dialogVisible = true">举报</li>
               <li v-if="value.hasSelf">
                 <el-popconfirm
@@ -198,14 +199,15 @@
 </template>
 <script>
 import {
-  getQuestion,
+  DeleteCollectionAnswer,
+  CollectionAnswerData,
   getQuestCollection,
   getQuestCollectionDelete,
   getAnswerSupport,
   getCancelLikeAnswer,
   UploadAnswer,
   DeleteAnswer,
-  ShowQuestionAnswerByPage,
+  ShowQuestionByPage,
   ShowUSerInfo,
   FocusOther
 } from "../../api/data";
@@ -261,8 +263,44 @@ export default {
       questionId:''
     };
   },
-  computed: {},
   methods: {
+    //访问别人首页
+    handleVisit(val){
+    if (val==this.$GetUserId()) {
+        this.$router.push({
+           name:'my' 
+        })
+    }else{
+      localStorage.setItem("userId",val);
+      this.$router.push({
+        name:'peopleInfo',
+        params:{
+          userId:val
+        }
+      })
+    }
+    },
+    //收藏回答事件
+     async handCollectionAnwer(val){
+       if(val.hasCollection){
+         let result=await DeleteCollectionAnswer(val.answerId);
+        if (result["data"].code=="200") {
+            this.message("success","取消成功");
+            val.hasCollection=false;
+        }else{
+            this.message("warning","取消失败");
+        }
+       }else{
+       let result=await CollectionAnswerData(val.answerId);
+        if (result["data"].code=="200") {
+            this.message("success","收藏成功");
+            val.hasCollection=true;
+        }else{
+            this.message("warning","取消失败");
+
+        }
+       }
+    },
     //获取消息
       async getUSerInfo(item){
       if(item.userId!=this.UserInfo.userId){
@@ -426,6 +464,7 @@ export default {
                 content: this.content,
                 createTime:time,
                 hasLike: false,
+                hasCollection:false,
                 authorName:this.$store.state.user.userName,
                 authorImage:this.$store.state.user.selfImage,
                 hasSelf:true,
@@ -438,6 +477,8 @@ export default {
                 content: this.content,
                 createTime: time,
                 hasLike: false,
+                hasCollection:false,
+
                 authorName:this.$store.state.user.userName,
                 authorImage:this.$store.state.user.selfImage,
                 hasSelf:true,
@@ -499,24 +540,28 @@ export default {
       }
       this.questionId=questionId;
       //请求文章详情
-        let result = await getQuestion(`${questionId}`);
-        this.questionData = result["data"].result[0];
-        this.SupportFlay = result["data"].result[1].hasLike;
-      //请求回答
-        let res=await ShowQuestionAnswerByPage(`${questionId}/1/10`);
-        this.answerData = res["data"].result.data[1].reverse();
-        this.answerNum=res["data"].result.allDataNum;
+        let result = await ShowQuestionByPage(`${questionId}`,`1`);
+        console.log(result);
+        this.questionData = result["data"].result.data[0];
 
-        // this.answerNum = result["data"].result[1].length;
-        //判断是否收藏
-        if (result["data"].result[0].hasCollection) {
+        this.answerData = result["data"].result.data[1].reverse();
+        this.answerNum=result["data"].result.allDataNum;
+
+        // this.SupportFlay = result["data"].result[1].hasLike;
+      //请求回答
+        // let res=await ShowQuestionAnswerByPage(`${questionId}/1/10`);
+      
+
+        // // this.answerNum = result["data"].result[1].length;
+        // //判断是否收藏
+        if (result["data"].result.data[0].hasCollection) {
           $(".question_operation li:nth-of-type(3)")
             .css("color", "#F56C6C")
             .text("取消收藏");
           this.CollectionFlay = true;
         }
-        //判断是否点赞
-        if (result["data"].result[0].hasFocus) {
+        // //判断是否点赞
+        if (result["data"].result.data[1].hasFocus) {
           $(".question_operation li:nth-of-type(1)").css("color", "#409EFF");
           $(".question_support").attr(
             "src",

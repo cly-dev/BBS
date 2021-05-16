@@ -18,14 +18,14 @@
           <div class="care_user" v-for="(value, key) in MycareData" :key="key">
             <el-popover placement="right-end" width="200" trigger="hover">
               <div class="core_info">
-                <span>邮箱:{{ value.email }}</span>
+                <span>粉丝:{{ value.fansSum }}</span>
+                <span>关注:{{ value.idolSum }}</span>
                 <span>性别:{{ value.sex }}</span>
-                <span>生日:{{ value.birthday }}</span>
                 <span>注册时间:{{ value.createTime }}</span>
               </div>
               <div slot="reference">
                 <img
-                  src="../../../static/images/cablecar.jpg"
+                  :src="value.selfImage"
                   alt="请检查网络"
                   class="user_img"
                 />
@@ -44,13 +44,12 @@
         </div>
         <el-pagination
           v-if="MycareData.length!=0"
-          style="text-align: center; margin-top: 20px"
-          @size-change="handleSizeChange"
+            style="width:100%;text-align: center; margin-top: 20px;position:absolute; bottom:0"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage1"
           :page-size="8"
           layout="total, prev, pager, next"
-          :total="100"
+          :total="mycareTotal"
         >
         </el-pagination>
       </div>
@@ -60,14 +59,14 @@
           <div class="care_user" v-for="(value, key) in CaremyData" :key="key">
             <el-popover placement="right-end" width="200" trigger="hover">
               <div class="core_info">
-                <span>邮箱:{{ value.email }}</span>
+                <span>粉丝:{{ value.fansSum }}</span>
+                <span>关注:{{ value.idolSum }}</span>
                 <span>性别:{{ value.sex }}</span>
-                <span>生日:{{ value.birthday }}</span>
                 <span>注册时间:{{ value.createTime }}</span>
               </div>
               <div slot="reference">
                 <img
-                  src="../../../static/images/cablecar.jpg"
+                  :src="value.selfImage"
                   alt="请检查网络"
                   class="user_img"
                 />
@@ -91,12 +90,12 @@
         </div>
         <el-pagination
         v-if=" CaremyData.length!=0"
-          style="text-align: center; margin-top: 20px;position:bottom:0"
+          style="width:100%;text-align: center; margin-top: 20px;position:absolute; bottom:0"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage2"
           :page-size="8"
           layout="total, prev, pager, next"
-          :total="100"
+          :total="fansTotal"
         >
         </el-pagination>
       </div>
@@ -120,7 +119,8 @@ export default {
       //关注我的
       CaremyData: [],
       //条数
-      total:0
+      mycareTotal:0,
+      fansTotal:0,
     };
   },
   methods: {
@@ -137,6 +137,8 @@ export default {
            offset:100
          });
          this.MycareData.splice(index,1);
+          this.mycareTotal--;
+
      }
      }
  
@@ -152,6 +154,7 @@ export default {
             message: "关注成功",
             offset: 100,
           });
+          this.mycareTotal++;
           this.MycareData.unshift({
             userId:value.userId,
             studentId:value.studentId,
@@ -165,6 +168,8 @@ export default {
             idolSum: 2,
             fansSum: 0,
           })
+      }else if (result["data"].code=="500") {
+        this.message("warning","已经关注过啦");
       }
     },
     handleClick(e) {
@@ -202,18 +207,21 @@ export default {
   },
   async created() {
       async function Focus(){
-        let result=await ShowFocus();
+        let result=await ShowFocusByPage("/1/8");
           return result;
       }
       async function Fans(){
-        let result=await ShowFans();
+        let result=await ShowFansByPage("/1/8");
         return result;
       }
       let p1=Focus();
       let p2=Fans();
       Promise.all([p1,p2]).then(res=>{
-        this.MycareData=res[0]["data"].result;
-        this.CaremyData=res[1]["data"].result;
+        this.MycareData=res[0]["data"].result.data;
+        this.CaremyData=res[1]["data"].result.data;
+        this.mycareTotal=res[0]["data"].result.allDataNum;
+        this.fansTotal=res[0]["data"].result.allDataNum;
+        console.log(res[0]["data"].result.data);
       })
   },
 };

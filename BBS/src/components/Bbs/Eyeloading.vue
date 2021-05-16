@@ -1,14 +1,16 @@
 <template>
-    <div class="loading_container">
+    <div class="loading_contain">
       <div class="eye"></div>
     </div>
 </template>
 
 <script>
+export default{
+}
 </script>
 
 <style>
-  .loading_container{
+  .loading_contain{
      width: 100px;
      background-color: rgba(255, 255, 255, 1.0);
      height: 100px;

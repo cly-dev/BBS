@@ -353,6 +353,7 @@ export default {
         email: this.formData.email,
         mobilePhone: this.formData.phone,
         enterSchoolTime: this.formData.enterShoolTime,
+        selfImage:'../../../static/images/logo.png'
       });
       if (result["data"].code == "200") {
         this.disabled=true;

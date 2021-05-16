@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1901641",
+      "name": "粉丝趴",
+      "font_class": "fensipa",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "5652786",
+      "name": "关注",
+      "font_class": "guanzhu",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
       "icon_id": "371803",
       "name": "QQ",
       "font_class": "qq",

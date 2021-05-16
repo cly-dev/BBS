@@ -1,5 +1,6 @@
 <script>
 import {ShowFocusByPage,CancelFocus} from '../../api/data';
+import TitleHeader from "./TitleHeader";
     export default {
         data(){
             return{
@@ -9,6 +10,9 @@ import {ShowFocusByPage,CancelFocus} from '../../api/data';
                 total:0
             }
         },
+        components:{
+            TitleHeader
+        },
         render(createElement){
             return(
                 //用v-show代替v-if
@@ -16,14 +20,19 @@ import {ShowFocusByPage,CancelFocus} from '../../api/data';
                 //事件:用原生事件绑定on(事件类型) ()=>--传递参数
                 //自定义事件on+自定义事件名
                <section class="core_contianer">
+                <header>
+                <TitleHeader title="我的关注">
+                </TitleHeader>
+                </header>
+                <main>
                     <section v-show={this.total!=0}>
                     {
                         this.list.map((item,index)=>{
                             return (
                                 <section class="core_mainer">
                                  <section class="core_data">
-                                    <img src={item.img}> </img>
-                                    <span>{item.name}</span>
+                                    <img src={item.selfImage}> </img>
+                                    <span>{item.userName}</span>
                                 </section>
                                 <section class="core_btn">
                                     <el-button  icon="el-icon-position" size="mini"  onClick={()=>this.handleSearch(item,index)}>访问</el-button>
@@ -35,9 +44,8 @@ import {ShowFocusByPage,CancelFocus} from '../../api/data';
                         })
                     }
                     <section class="page_container">
-                    <section class="page_mainer">
                     <el-pagination
-                    style="text-align:center"
+                    style="text-align:center;"
                     background
                     on-current-change={this.handleCurrentChange}
                     layout="prev, pager, next"
@@ -45,11 +53,10 @@ import {ShowFocusByPage,CancelFocus} from '../../api/data';
                     </el-pagination>
                     </section>
                     </section>
-                    </section>
                     <section class="core_null" v-show={this.total==0}>
                         <span>还没有关注的人</span>
                     </section>
-                    
+                    </main>
                </section>
             )
         },
@@ -63,7 +70,7 @@ import {ShowFocusByPage,CancelFocus} from '../../api/data';
             async handleDetele(val,index){
                 console.log(val);
                 let result=await CancelFocus({
-                     userId:value.userId
+                     userId:val.userId
                 })
                 if (result["data"].code=="200") {
                     this.message("success","取消成功");
@@ -78,6 +85,7 @@ import {ShowFocusByPage,CancelFocus} from '../../api/data';
         },
         async created(){
             let result=await ShowFocusByPage("1/10");
+            console.log(result);
             this.total=result["data"].result.allDataNum;
             this.list=result["data"].result.data;
         },

@@ -82,14 +82,26 @@ export const FixSelfInfo=(params=>{
 })
 //获取自己的信息
 export const ShowSelf=()=>{
-  return request(`/user/showSelfPage2/`,"","");
+  return request(`/user/showSelfPage2/`);
 }
+//展示个人主页信息
+export const ShowUSerInfo=(userId=>{
+  return request(`/user/showSbPage2/${userId}`);
+})
+//是否关注某人
+export const IsFocus=(userId=>{
+  return request(`/fans/isFocus`,"",userId,"POST");
+})
 
 
 //论坛模块
 // 请求论坛首页数据
 export const getHomepage=()=>{
     return request("/homePage2");
+}
+//获取广场信息
+export const ShowRandomArticle=()=>{
+  return request("/article/showRandomArticle");
 }
 //详细展示问题内容
 export const ShowQuestion=(questionId=>{
@@ -115,13 +127,25 @@ export const CollectionArticles=(articleId=>{
 export const CollectionArticledelete=(articleId=>{
   return request(`/collectionArticle/delete`,"",articleId,"POST");
 })
-//我收藏的文章
+//收藏某篇回答
+export const CollectionAnswerData=(answerId=>{
+  return request(`/collectionAnswer/insert`,"",{answerId},"POST");
+})
+//取消收藏某篇答案
+export const DeleteCollectionAnswer=(answerId=>{
+  return request(`/collectionAnswer/delete`,"",{answerId},"POST");
+})
+//分页请求某人收藏的文章
 export const CollectionArticle=(userId)=>{
-  return request(`/collection2/article2/showByPage2/${userId}/6`);
+  return request(`/collection2/article2/showByPage2/${userId}`);
 }
-//我收藏的问题
+//分页请求某人收藏的问题
 export const CollectionQuestion=((userId)=>{
   return request(`/collection2/question2/showByPage2/${userId}`);
+})
+//分页请求某人收藏的答案
+export const CollectionAnswer=(userId=>{
+  return request(`/collection2//answer2/showByPage2/${userId}`);
 })
 //取消收藏问题
 export const getQuestCollectionDelete=(questionId)=>{
@@ -180,9 +204,9 @@ export const ShowArticle=(articleId=>{
   return request(`/article/showArticle2/${articleId}`);
 })
 //请求文章所有的标签
-export const ShowLabel=(articleId=>{
-  return request(`/article/showArticleLabel/${articleId}`)
-})
+// export const ShowLabel=(articleId=>{
+//   return request(`/article/showArticleLabel/${articleId}`)
+// })
 //请求文章的评论
 export const ShowAllCommentByPage=(articleId=>{
   return request(`/comment2/showArticleAllCommentByPage2/${articleId}`)
@@ -243,10 +267,7 @@ export const ShowFansByPage=(params)=>{
 export const FocusOther=(userId=>{
   return request(`/fans/focusOther`,"",userId,"POST");
 })
-//展示个人主页信息
-export const ShowUSerInfo=(userId=>{
-  return request(`/user/showSbPage2/${userId}`,"","");
-})
+
 //取消关注某人
 export const CancelFocus=(userId=>{
   return request(`/fans/cancelFocus`,"",userId,"POST")

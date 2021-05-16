@@ -58,7 +58,7 @@
                   <div class="grid-content nav_msg hidden-sm-and-down">
                     <ul>
                       <li>
-                        <span>{{ user.userName }}</span>
+                        <!-- <span>{{ user.userName }}</span> -->
                       </li>
                       <li>
                         <router-link to="#">关于我们</router-link>
