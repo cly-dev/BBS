@@ -1,0 +1,104 @@
+@import "../commit.less";
+
+header,main{
+    .alikeBox();
+}
+header{
+    height: 50px;
+    line-height: 50px;
+    nav{  
+       ul{
+           .clearfloat();
+       }
+       li{
+           margin-right: 50px;
+           cursor: pointer;
+           float: left;
+           height:50px;
+       
+           &:hover{
+               color: #409EFF;
+           }       
+       }
+    }
+}
+main{
+    border-top: 1px solid #EBEEF5;
+    section[class$='container']{
+        display: none;
+    }
+    .item_contain{
+        width: 100%;
+        
+        .textsellipsis();
+        cursor: pointer;
+        border-bottom: 1px solid #EBEEF5;
+        height: 60px;
+    .item_data{
+        float: left;
+        cursor: pointer;
+        border-bottom: 1px solid #EBEEF5;
+        height: 60px;
+        width: 80%;
+        span{
+            display: block;
+            // padding-right: 5px;
+            color: #909399;
+        }
+         .item_title{
+             pointer-events: none;
+             display: inline-block;
+             width: 100%;
+            height: 30px;
+            line-height: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+            .textsellipsis();
+        }
+      
+    }
+    .item_operation{
+        text-align: center;
+        height:50px;
+        line-height: 50px;
+        float: left;
+        width: 20%;
+    }
+    }
+}
+.Answer_data{
+    .item_title{
+        overflow: hidden;
+        vertical-align:bottom;
+        box-sizing: border-box;
+        padding-right: 10px;
+        font-size: 25px;
+        font-weight: bold;
+        display:inline-block;
+        max-width:400px;
+    }
+}
+.activer{
+    font-weight:bold;
+    border-bottom:2px solid #409EFF;
+}
+.content_contain{
+    .content_mainer{
+        height:240px;
+        overflow-y:scroll;
+        font-size: 20px;
+    }
+}
+.data_null{
+    font-size: 18px;
+    line-height: 200px;
+    height: 200px;
+    text-align: center;
+    border: 1px solid transparent;
+    color: #909399;
+}
+
+body main .CollectionQuesition_container{
+    display: block;
+}
